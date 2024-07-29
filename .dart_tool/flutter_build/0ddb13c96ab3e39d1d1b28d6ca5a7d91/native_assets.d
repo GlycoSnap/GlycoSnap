@@ -1,0 +1,1 @@
+ C:\\Users\\USER\\OneDrive\\Desktop\\glycosnap\\.dart_tool\\flutter_build\\0ddb13c96ab3e39d1d1b28d6ca5a7d91\\native_assets.yaml: 

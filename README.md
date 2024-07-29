@@ -1,2 +1,2 @@
-# new
+# GlycoSnap
  Image assisted dietary assessment mobile app and website
