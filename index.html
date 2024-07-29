@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GlycoSnap</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-bs-spy="scroll" data-bs-target=".navbar">
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="images/logo.png" id="logo-nav">
+            </a>
+            <button class="navbar-toggler" type="button" id="navbar-button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#howitworks">How it works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#team">Team</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+<!--home-->
+    <header class="header-container" id="home">
+        <div class="page1-img" data-aos="fade-left">
+            <img src="images/1.png" id="intro-img">
+        </div>
+            <div class="contents1">
+                <div class="page1-title">
+                    <h1 id="page1-title-1" data-aos="fade-left" data-aos-delay="100">Glyco</h1>
+                    <h1 id="page1-title-2" data-aos="fade-left" data-aos-delay="100">Snap</h1>
+                </div>
+                <div class="page1-description">
+                    <h4 id = "slogan" data-aos="fade-right" data-aos-delay="200">VISUALIZE WELLNESS: TRANSFORMING PLATES INTO INSIGHTS!</h4>
+                    <p id = "description1" data-aos="fade-right" data-aos-delay="200">An innovative solution that uses advanced image recognition technology to estimate the glycemic load of meals.</p>
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <a href="#" class="btn btn-brand me-2">Get Started</a>
+                    </div>
+                </div>
+            </div>
+    </header>
+
+
+    <!-- about -->
+    <section id="about" class="section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="50">
+                    <div class="section-title">
+                        <div id="about">
+                        <h1 class="display-4 fw-bold">About Us</h1>
+                        <p>GlycoSnap utilizes cutting-edge computer vision technology to assess the glycemic load of food portions. By simply taking or uploading a photo of their plate, GlycoSnap seamlessly analyzes visual data and users receive an accurate glycemic load calculation, helping them make informed dietary choices, promoting healthier lifestyles and improved well-being.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- features -->
+    <section id="features" class="section-padding border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="150">
+                    <div class="section-title">
+                        <h1 class="display-4 fw-semibold">GlycoSnap Features</h1>
+                        <div class="line"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="features-row text-center">
+                <div class="feature-card" data-aos="fade-down" data-aos-delay="200">
+                    <div class="service theme-shadow p-lg-4 ">
+                        <div class="featurebox">
+                            <img src="images/3.jpg" alt="AI-assisted Glycemic Load Estimation">
+                        </div>
+                        <h5 class="mt-0.5 mb-2">AI-assisted Glycemic Load Estimation</h5>
+                        <p class="pt-2">With the use of AI techniques such as computer vision and image analysis, GlycoSnap is able to predict the Glycemic Load of any food portion.</p>
+                    </div>
+                </div>
+                <div class="feature-card" data-aos="fade-down" data-aos-delay="200">
+                    <div class="service theme-shadow p-lg-4 ">
+                        <div class="featurebox">
+                            <img src="images/diet.png" alt="Dietary Recommendations">
+                        </div>
+                        <h5 class="mt-0.5 mb-2">Dietary<br> Recommendations</h5>
+                        <p class="pt-2">Based on the glycemic load analysis, GlycoSnap offers personalized recommendations for portion control, meal planning, and healthier food choices.</p>
+                    </div>
+                </div>
+                <div class="feature-card" data-aos="fade-down" data-aos-delay="200">
+                    <div class="service theme-shadow p-lg-4 ">
+                        <div class="featurebox">
+                            <img src="images/nutritionist.jpg" alt="Nutritionist Consultation">
+                        </div>
+                        <h5 class="mt-0.5 mb-2">Nutritionist<br>Consultation</h5>
+                        <p class="pt-2">Provides users with the option to consult with certified nutritionists directly through GlycoSnap for personalized dietary advice and meal planning.</p>
+                    </div>
+                </div>
+                <div class="feature-card" data-aos="fade-down" data-aos-delay="200">
+                    <div class="service theme-shadow p-lg-4 ">
+                        <div class="featurebox">
+                            <img src="images/community.jpg" alt="Community Support">
+                        </div>
+                        <h5 class="mt-0.5 mb-2">Community<br>Support</h5>
+                        <p class="pt-2">A vibrant support platform where you can connect with friends and fellow users to share dietary experiences and tips. Our website also features articles, blogs and discussions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- how it works -->
+    <section id="howitworks" class="section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="50">
+                    <div class="section-title">
+                        <h1 class="display-4 fw-semibold">How it works</h1>
+                        <div class="line"></div>
+                        <p id="works-description">GlycoSnap is incredibly user-friendly, making it easy for you to track your diet and nutrition with just a few taps.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-between align-items-center">
+                <div class="col-lg-6 col-md-6 col-sm-12 order-lg-1" data-aos="fade-down" data-aos-delay="50" id="works-img">
+                    <img src="images/4.jpg" alt="" class="img-fluid">
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 order-lg-2" data-aos="fade-down" data-aos-delay="150" class="works-content">
+                    <div class="d-flex pt-4 mb-3">
+                        <div class="iconbox me-4">
+                            <i class="ri-camera-fill"></i>
+                        </div>
+                        <div class="works">
+                            <h5>Upload a picture</h5>
+                            <p>Simply snap or upload a photo of your plate, and our intelligent image recognition technology will analyze the content.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <div class="iconbox me-4">
+                            <ion-icon name="fast-food"></ion-icon>
+                        </div>
+                        <div class="works">
+                            <h5>Glycemic load information</h5>
+                            <p>GlycoSnap automatically identifies the foods and provides you with their glycemic load information</p>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="iconbox me-4">
+                            <i class="ri-bar-chart-box-fill"></i>
+                        </div>
+                        <div class="works">
+                            <h5>Store your meals</h5>
+                            <p>Store your meal history and receive comprehensive weekly reviews to help you stay on track with your dietary goals.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    
+    
+    
+    <!-- team -->
+    <section id="team" class="section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="150">
+                    <div class="section-title">
+                        <h1 class="display-4 fw-semibold">Team Members</h1>
+                        <div class="line"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-row text-center">
+                <div class="team-member image-zoom" data-aos="fade-down" data-aos-delay="100">
+                    <div class="image-zoom-wrapper">
+                        <a href="https://www.linkedin.com/in/hans-matere-008838260/" target="_blank"><img src="images/hans.jpg" alt="" class="small-image"></a>
+                    </div>
+                    <div class="team-member-content">
+                        <h4 class="text-white">Matere Hans Walubengo</h4>
+                        <p class="mb-0 text-white">Computer Vision Expert</p>
+                    </div>
+                </div>
+                <div class="team-member image-zoom" data-aos="fade-down" data-aos-delay="100">
+                    <div class="image-zoom-wrapper">
+                        <a href="https://www.linkedin.com/in/kendileila-muriungi-568957262/" target="_blank"><img src="images/kendi.JPG" alt="" class="small-image"></a>
+                    </div>
+                    <div class="team-member-content">
+                        <h4 class="text-white">Joy Leila Kendi</h4>
+                        <p class="mb-0 text-white">Data Scientist</p>
+                    </div>
+                </div>
+                <div class="team-member image-zoom" data-aos="fade-down" data-aos-delay="100">
+                    <div class="image-zoom-wrapper">
+                        <a href="https://www.linkedin.com/in/ann-kaigu-0604b924b/" target="_blank"><img src="images/kaigu.jpg" alt="" class="small-image"></a>
+                    </div>
+                    <div class="team-member-content">
+                        <h4 class="text-white">Kaigu Ann Wangari</h4>
+                        <p class="mb-0 text-white">Front-end Developer</p>
+                    </div>
+                </div>
+                <div class="team-member image-zoom" data-aos="fade-down" data-aos-delay="100">
+                    <div class="image-zoom-wrapper">
+                        <a href="https://www.linkedin.com/in/levi-mutugi-52025a178/" target="_blank"><img src="images/levi.jpg" alt="" class="small-image"></a>
+                    </div>
+                    <div class="team-member-content">
+                        <h4 class="text-white">Levi Mutugi Mutharimi</h4>
+                        <p class="mb-0 text-white">Back-end Developer</p>
+                    </div>
+                </div>
+                <div class="team-member image-zoom" data-aos="fade-down" data-aos-delay="100">
+                    <div class="image-zoom-wrapper">
+                        <a href="https://www.linkedin.com/in/zawadi-kiarie-03563714a/" target="_blank"><img src="images/zawadi.jpg" alt="" class="small-image"></a>
+                    </div>
+                    <div class="team-member-content">
+                        <h4 class="text-white">Zawadi Muthoni Kiarie</h4>
+                        <p class="mb-0 text-white">Machine Learning Engineer</p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row mt-5">
+                <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="0">
+                    <div class="section-title">
+                        <h1 class="display-4 fw-semibold" id="collab-text">In Collaboration With</h1>
+                        <div class="line"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-row text-center">
+                <div class="collab-member image-zoom" data-aos="fade-down" data-aos-delay="0">
+                    <div class="image-zoom-wrapper">
+                        <a href="https://jhubafrica.com/" target="_blank"><img src="images/JHUB Africa.png" alt="" id="jhub"></a>
+                    </div>
+                </div>
+                <div class="collab-member image-zoom" data-aos="fade-down" data-aos-delay="0">
+                    <div class="image-zoom-wrapper">
+                        <a href="https://www.jkuat.ac.ke/" target="_blank"><img src="images/JKUAT.png" alt="" id="jkuat"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    
+
+    <!--footer-->
+    <footer>
+        <div class="footer-top">
+            <div class="container">
+                <div class="row gy-5">
+                    <div class="col-lg-3 col-sm-6">
+                        <img src="images/logo.png" alt="" id="logo">
+                        <div class="social-icons">
+                            <a href="https://www.linkedin.com/feed/" target="_blank"><img src="images/linkedin.ico" class="icons"></a>
+                            <a href="mailto:glycosnap@gmail.com" target="_blank"><img src="images/gmail.ico" class="icons"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row g-4 justify-content-between">
+                    <div class="col-auto">
+                        <p class="mb-0"id="copyright">© Copyright GlycoSnap. All Rights Reserved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="animation.js"></script>
+</body>
+
+</html>
