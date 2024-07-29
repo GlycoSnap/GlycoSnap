@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">99321403066</string>
+    <string name="google_api_key" translatable="false">AIzaSyBUsx97k6bniHbujcdV3o_z-vSu9hMAjQ0</string>
+    <string name="google_app_id" translatable="false">1:99321403066:android:b4713161a91d013a83d483</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBUsx97k6bniHbujcdV3o_z-vSu9hMAjQ0</string>
+    <string name="google_storage_bucket" translatable="false">glycosnap-67b4f.appspot.com</string>
+    <string name="project_id" translatable="false">glycosnap-67b4f</string>
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>
