@@ -22,7 +22,7 @@ class _AddFoodState extends State<AddFood> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
   final String baseUrl =
-      'http://192.168.0.102:5000'; // Replace with your Flask server URL
+      'http://10.5.17.78:5000'; // Replace with your Flask server URL
 
   Future<Map<String, dynamic>>? _glycemicLoadFuture;
 

@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:glycosnap/Screen/meal_provider.dart';
+import 'package:glycosnap/Screen/meal_selection.dart';
 import 'package:glycosnap/Utils/colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +24,7 @@ class _AddFoodState extends State<AddFood> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
   final String baseUrl =
-      'http://192.168.0.102:5000'; // Replace with your Flask server URL
+      'http://10.5.17.78:5000'; // Replace with your Flask server URL
 
   Future<Map<String, dynamic>>? _glycemicLoadFuture;
 

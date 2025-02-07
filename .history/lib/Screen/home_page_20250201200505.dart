@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:glycosnap/Screen/settings.dart';
+import 'package:glycosnap/Screen/add_food.dart';
+import 'package:glycosnap/Screen/community.dart';
+import 'package:glycosnap/Screen/review.dart';
 import 'package:glycosnap/Utils/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';

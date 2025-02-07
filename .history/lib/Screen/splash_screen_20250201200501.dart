@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:glycosnap/Screen/login.dart';
+import 'package:glycosnap/Screen/signup_questions.dart';
 import 'package:glycosnap/Screen/slides.dart';
+import 'package:glycosnap/main.dart';
 import 'package:pretty_animated_buttons/pretty_animated_buttons.dart';
 import 'package:glycosnap/Utils/colors.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 
 class MySplashScreen extends StatefulWidget {

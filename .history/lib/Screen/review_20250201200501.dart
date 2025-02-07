@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:glycosnap/Screen/settings.dart';
+import 'package:glycosnap/Screen/add_food.dart';
+import 'package:glycosnap/Screen/community.dart';
+import 'package:glycosnap/Screen/home_page.dart';
 import 'package:glycosnap/Utils/colors.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:get/get.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

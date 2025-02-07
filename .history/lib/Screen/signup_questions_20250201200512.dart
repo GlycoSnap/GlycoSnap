@@ -648,7 +648,7 @@ class _CreateAccountState extends State<CreateAccount> {
     if (_formKey.currentState?.validate() ?? false) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     }
   }

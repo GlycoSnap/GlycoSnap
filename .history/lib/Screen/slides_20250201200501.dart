@@ -52,8 +52,8 @@ class _SlidesState extends State<Slides> {
               });
             },
             children: [
-              const SlideOne(),
-              const SlideTwo(),
+              SlideOne(),
+              SlideTwo(),
               SlideThree(goToSlideThree: goToSlideThree),
             ],
           ),

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:glycosnap/Authenticate/web_view.dart';
+import 'package:glycosnap/Screen/settings.dart';
+import 'package:glycosnap/Screen/add_food.dart';
+import 'package:glycosnap/Screen/home_page.dart';
+import 'package:glycosnap/Screen/review.dart';
 import 'package:glycosnap/Utils/colors.dart';
 import 'package:glycosnap/Authenticate/nyt_api.dart';
 import 'package:glycosnap/Authenticate/nyt_articles.dart';

@@ -30,7 +30,7 @@ class _LoginState extends State<Login> {
       // Successfully signed in
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
     } catch (e) {
       // Handle error

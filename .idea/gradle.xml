@@ -7,9 +7,9 @@
         <compositeConfiguration>
           <compositeBuild compositeDefinitionSource="SCRIPT">
             <builds>
-              <build path="$PROJECT_DIR$/../../../../../flutter/flutter/packages/flutter_tools/gradle" name="gradle">
+              <build path="$PROJECT_DIR$/../../../../../../flutter/flutter/packages/flutter_tools/gradle" name="gradle">
                 <projects>
-                  <project path="$PROJECT_DIR$/../../../../../flutter/flutter/packages/flutter_tools/gradle" />
+                  <project path="$PROJECT_DIR$/../../../../../../flutter/flutter/packages/flutter_tools/gradle" />
                 </projects>
               </build>
             </builds>
@@ -29,7 +29,7 @@
             <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-3.16.4/android" />
             <option value="$PROJECT_DIR$/android" />
             <option value="$PROJECT_DIR$/android/app" />
-            <option value="$PROJECT_DIR$/../../../../../flutter/flutter/packages/flutter_tools/gradle" />
+            <option value="$PROJECT_DIR$/../../../../../../flutter/flutter/packages/flutter_tools/gradle" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

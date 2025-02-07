@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:glycosnap/Authenticate/pic_storage.dart';
+import 'package:glycosnap/Utils/colors.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePicture extends StatefulWidget {

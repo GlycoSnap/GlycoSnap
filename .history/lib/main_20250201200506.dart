@@ -1,6 +1,7 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:glycosnap/Screen/meal_provider.dart';
+import 'package:glycosnap/Screen/meal_selection.dart';
 import 'package:glycosnap/Screen/notifications.dart';
 import 'package:glycosnap/Screen/signup_questions.dart';
 import 'firebase_options.dart';
@@ -16,7 +17,10 @@ import 'package:glycosnap/Screen/splash_screen.dart';
 import 'package:glycosnap/Screen/login.dart';
 import 'package:get/get.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
+import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:glycosnap/Utils/colors.dart';
+import 'package:glycosnap/firebase_options.dart';
+import 'package:glycosnap/Utils/utils.dart';
 import 'package:provider/provider.dart';
 
 const List<TabItem> items = [
