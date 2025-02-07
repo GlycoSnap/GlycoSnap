@@ -6,7 +6,7 @@ from ultralytics import YOLO
 
 app = Flask(__name__)
 
-model_path = 'C:/Users/USER/OneDrive/Desktop/glycosnap/glycosnap_model.pt'
+model_path = 'C:\\Users\\USER\\OneDrive\\Desktop\\Attachment\\new\\glycosnap_model.pt' #model path
 yolo_model = YOLO(model_path)  # Replace with actual loading method
 
 # Define GI values and carbohydrate densities
