@@ -1,7 +1,7 @@
 # GlycoSnap
 GlycoSnap is an AI-powered food recognition app that calculates the glycemic load of meals. 
 This repository contains the mobile app and website
-Website: https://glycosnap.jhubafrica.com/
+-Website: https://glycosnap.jhubafrica.com/
 
 ## 🚀Features:
 ✅ Food recognition with YOLOv8
