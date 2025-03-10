@@ -1,223 +1,110 @@
 import 'package:flutter/material.dart';
-import 'package:glycosnap/Utils/colors.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Settings extends StatefulWidget {
-  const Settings ({super.key});
-
-  @override
-  State<Settings> createState() => _SettingsState();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SettingsController.init();
+  runApp(MyApp());
 }
 
-class _SettingsState extends State<Settings> {
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: SettingsController.to.isDarkMode.value
+              ? ThemeData.dark()
+              : ThemeData.light(),
+          home: SettingsScreen(),
+        ));
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffFDFFFF),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xffBEE1DD),
-        toolbarHeight: 60,
-        title: Container(
-          child: Text(
-            'Settings',
-            style: TextStyle(
-              fontFamily: 'OpenSauce',
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: colorDark,
-            ),
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: 
-      SettingsList(
+      appBar: AppBar(title: Text("Settings")),
+      body: SettingsList(
         sections: [
           SettingsSection(
-            margin: const EdgeInsetsDirectional.all(5),
-            title: Text('General Settings',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 14,
-              color: colorDark,
-            ),),
+            title: Text("Appearance"),
             tiles: [
               SettingsTile.switchTile(
-                onToggle: (value) {},
-                initialValue: false,
-                leading: const Icon(Icons.dark_mode,
-                color: Colors.black,),
-                title: const Text('Dark mode',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),),
-              ),
-              SettingsTile(
-                title: const Text('Change Password',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(Icons.key,
-                color: Colors.black,),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: const Text('Notifications',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(Icons.notifications_active_rounded,
-                color: Colors.black,),
-                //switchValue: value,
-                onPressed: (BuildContext context) {},
+                title: Text("Dark Mode"),
+                leading: Icon(Icons.dark_mode),
+                initialValue: SettingsController.to.isDarkMode.value,
+                onToggle: (value) => SettingsController.to.setDarkMode(value),
               ),
             ],
           ),
           SettingsSection(
-            margin: const EdgeInsetsDirectional.all(5),
-            title: Text('Account Settings',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 14,
-              color: colorDark,
-            ),),
+            title: Text("Preferences"),
             tiles: [
-              SettingsTile(
-                title: const Text('Account',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(
-                  Icons.account_circle,
-                  color: Colors.black,
-                  ),
-                onPressed: (BuildContext context) {
-                  Get.toNamed('/account');
-                },
-              ),
-              SettingsTile(
-                title: const Text('Dietary history',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),),
-                leading: const Icon(Icons.library_books,
-                color: Colors.black,),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: const Text('Delete Account',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(Icons.delete,
-                color: Colors.black,),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: const Text('Log Out',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(Icons.logout,
-                color: Colors.black,),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
-              ),
-            ],
-          ),
-          SettingsSection(
-            margin: const EdgeInsetsDirectional.all(5),
-            title: Text('Information',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 14,
-              color: colorDark,
-            ),),
-            tiles: [
-              SettingsTile(
-                title: const Text('About App',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(
-                  Icons.phone_android,
-                  color: Colors.black,
-                  ),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: const Text('Terms & Conditions',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(Icons.file_copy,
-                color: Colors.black,),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: const Text('Privacy Policy',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(Icons.verified_user,
-                color: Colors.black,),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
-              ),
-              SettingsTile(
-                title: const Text('Share This App',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                ),
-                leading: const Icon(Icons.share,
-                color: Colors.black,),
-                //trailing: ,
-                onPressed: (BuildContext context) {},
+              SettingsTile.navigation(
+                title: Text("Preferred Units"),
+                leading: Icon(Icons.scale),
+                value: Text(SettingsController.to.preferredUnit.value),
+                onPressed: (context) => _showUnitDialog(context),
               ),
             ],
           ),
         ],
       ),
-      
-      
     );
+  }
+
+  void _showUnitDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Select Preferred Unit"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: ["Grams", "Ounces"]
+              .map((unit) => RadioListTile(
+                    title: Text(unit),
+                    value: unit,
+                    groupValue: SettingsController.to.preferredUnit.value,
+                    onChanged: (value) {
+                      SettingsController.to.setPreferredUnit(value!);
+                      Get.back();
+                    },
+                  ))
+              .toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsController extends GetxController {
+  static SettingsController get to => Get.find();
+  var isDarkMode = false.obs;
+  var preferredUnit = "Grams".obs;
+
+  static Future<void> init() async {
+    Get.put(SettingsController());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SettingsController.to.isDarkMode.value = prefs.getBool("darkMode") ?? false;
+    SettingsController.to.preferredUnit.value = prefs.getString("preferredUnit") ?? "Grams";
+  }
+
+  void setDarkMode(bool value) async {
+    isDarkMode.value = value;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("darkMode", value);
+  }
+
+  void setPreferredUnit(String unit) async {
+    preferredUnit.value = unit;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("preferredUnit", unit);
   }
 }

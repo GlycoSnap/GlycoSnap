@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "99321403066",
-    "project_id": "glycosnap-67b4f",
-    "storage_bucket": "glycosnap-67b4f.appspot.com"
+    "project_number": "1018153372345",
+    "project_id": "glycosnap-c605c",
+    "storage_bucket": "glycosnap-c605c.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:99321403066:android:b4713161a91d013a83d483",
+        "mobilesdk_app_id": "1:1018153372345:android:8343401213660fde35a968",
         "android_client_info": {
           "package_name": "com.example.glycosnap"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBUsx97k6bniHbujcdV3o_z-vSu9hMAjQ0"
+          "current_key": "AIzaSyDeuWXoyFNncTY_EBq-GEqaaq8h-bIWJLc"
         }
       ],
       "services": {

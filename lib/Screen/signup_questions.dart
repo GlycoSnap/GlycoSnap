@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:glycosnap/main.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:glycosnap/Utils/colors.dart';
-import 'package:glycosnap/Screen/slides.dart';
-import 'package:glycosnap/Screen/login.dart';
 import 'package:pretty_animated_buttons/pretty_animated_buttons.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
@@ -208,8 +206,9 @@ class _Question2State extends State<Question2> {
       firstDate: DateTime(1900),
       initialDate: DateTime.now(),
     );
-    if (pickedDate == null) return;
-    datePickerController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+    if (pickedDate != null) {
+  datePickerController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+}
   }
 
   void _validateAndProceed() {
