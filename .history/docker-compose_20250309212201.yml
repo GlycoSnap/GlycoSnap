@@ -1,0 +1,15 @@
+services:
+  
+  flutter_app:
+    build: 
+      context: .
+    container_name: glycosnap_flutter
+    volumes:
+      - .:/app  # Mount local code into the container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - model
+    environment:
+      - FLASK_API_URL=http://model:5000
+    command: ["flutter", "run", "--debug"]

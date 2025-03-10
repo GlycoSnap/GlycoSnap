@@ -1,0 +1,6 @@
+
+firebase-admin
+numpy
+opencv-python
+ultralytics
+Flask==2.1.3  

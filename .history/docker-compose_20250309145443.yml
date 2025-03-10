@@ -1,0 +1,27 @@
+services:
+  model:
+    build: ./Model
+    container_name: glycosnap_flask
+    volumes:
+      - ./Model:/app
+      - C:/GlycoSnap/credentials.json:/app/credentials.json:ro
+      - C:/GlycoSnap/model:/tmp
+    ports:
+      - "5000:5000"
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+    command: ["flask", "run", "--host=0.0.0.0"]
+
+  flutter_app:
+    build: 
+      context: .
+    container_name: glycosnap_flutter
+    volumes:
+      - .:/app  # Mount local code into the container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - model
+    environment:
+      - FLASK_API_URL=http://model:5000
+    command: ["flutter", "run", "--debug"]

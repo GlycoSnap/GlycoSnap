@@ -1,0 +1,2 @@
+C:/GlycoSnap/new/android/app/.cxx/Debug/m5w3c532/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/GlycoSnap/new/android/app/.cxx/Debug/m5w3c532/arm64-v8a/CMakeFiles/rebuild_cache.dir
