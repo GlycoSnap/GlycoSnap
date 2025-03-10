@@ -48,7 +48,10 @@ The backend (model) runs inside a Docker container. Note: Building the container
 
 ## 4. Configure the Flutter Mobile App
 - Open the Flutter Project in VS Code:
-- Update the API URL: In your Flutter code, locate add_food.dart where the Flask API URL is defined. Change the URL to point to your host’s IP address on port 5000 e.g final String baseUrl = 'http://192.168.100.12:5000/predict';
+- Update the API URL: In your Flutter code, locate add_food.dart where the Flask API URL is defined. Change the URL to point to your host’s IP address on port 5000
+```
+final String baseUrl = 'http://192.168.100.12:5000/predict';
+```
 - Connect Your Mobile Device: Connect your phone via USB (or start an emulator).
 - Ensure that your device is detected by running:
 ```
