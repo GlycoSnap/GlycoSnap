@@ -1,2 +1,2 @@
-# new
- Image assisted dietary assessment mobile app and website
+### Website
+This branch contains GlycoSnap's website🌍 : https://glycosnap.jhubafrica.com/
