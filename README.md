@@ -18,7 +18,6 @@ This branch contains:
 - [Flutter](https://flutter.dev/docs/get-started/install) for running the mobile app (optional if you run the app via VS Code).
 
 ## Getting Started
-Getting Started
 # 1. Clone the repository: https://github.com/GlycoSnap/GlycoSnap.git
 cd glycosnap
 
