@@ -37,7 +37,10 @@ The backend (model) runs inside a Docker container. Note: Building the container
 ## Important: When the build is complete, check your host's IP address (e.g., using ipconfig on Windows or ifconfig/ip a on macOS/Linux).
 
 ## 3. Verify the Flask API is Running:
-- Open a web browser and navigate to: http://<your-host-ip>:5000/
+- Open a web browser and navigate to:
+    ```
+    http://<your-host-ip>:5000/
+    ```
 - You should see a message like:
 ```
 {"message": "GlycoSnap API is running!"}
