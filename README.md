@@ -55,7 +55,8 @@ The backend (model) runs inside a Docker container. Note: Building the container
 flutter devices
 ```
 - Run the Flutter App: Launch the app from VS Code or run:
-```flutter run -d <device-id>
+```
+flutter run -d <device-id>
 ```
 
 ## 5. Additional Notes
