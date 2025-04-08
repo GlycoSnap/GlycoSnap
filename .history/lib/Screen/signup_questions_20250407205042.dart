@@ -1,0 +1,990 @@
+import 'package:flutter/material.dart';
+import 'package:glycosnap/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:glycosnap/Utils/colors.dart';
+import 'package:pretty_animated_buttons/pretty_animated_buttons.dart';
+import 'package:intl/intl.dart';
+import 'package:get/get.dart';
+
+class SignUpQuestions extends StatefulWidget {
+  const SignUpQuestions({super.key});
+
+  @override
+  State<SignUpQuestions> createState() => _SignUpQuestionsState();
+}
+
+class _SignUpQuestionsState extends State<SignUpQuestions> {
+
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController fnameController = TextEditingController();
+  final TextEditingController surnameController = TextEditingController();
+
+  @override
+  void dispose() {
+    fnameController.dispose();
+    surnameController.dispose();
+    super.dispose();
+  }
+
+  void _validateAndProceed() {
+    if (_formKey.currentState?.validate() ?? false) {
+      Get.to(() => const Question2(),
+        transition: Transition.zoom,
+        duration: const Duration(milliseconds: 300),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: white,
+      ),
+      body: SingleChildScrollView(
+      child:Container(
+      color: white,
+      child: Center(
+        child:Container(
+          alignment:Alignment.topCenter,
+          padding: const EdgeInsets.all(10.0),
+          width: 350.0,
+          height: 670.0,
+          decoration: BoxDecoration(
+            color: backgroundColor2,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+            child: Column(
+              children: [
+                LinearPercentIndicator(
+                  lineHeight: 25.0,
+                  barRadius: const Radius.circular(20.0),
+                  percent: 0.25,
+                  animation: true,
+                  animationDuration: 500,
+                  backgroundColor: colorDark,
+                  progressColor: colorLight,          
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      Text("Before we get started we would love to get to know you better",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: black,
+                        fontFamily: 'Poppins',
+                        fontSize: 15,
+                      ),
+                    ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                  children: [
+                    TextFormField(
+                      controller: fnameController,
+                      keyboardType: TextInputType.name,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        filled: true,
+                        fillColor: white,
+                        labelText: 'First name',
+                        labelStyle: const TextStyle(
+                          color: Colors.black54,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your first name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 40),
+                    TextFormField(
+                      controller: surnameController,
+                      keyboardType: TextInputType.name,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        filled: true,
+                        fillColor: white,
+                        labelText: 'Surname',
+                        labelStyle: const TextStyle(
+                          color: Colors.black54,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your surname';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                  PrettyWaveButton(
+                  backgroundColor: white,
+                  horizontalPadding: 50,
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text(
+                    'Back',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                PrettyWaveButton(
+                  backgroundColor: colorLight,
+                  horizontalPadding: 50,
+                  onPressed: _validateAndProceed,
+                  child: const Text(
+                    'Next',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                  ],
+                ),
+              ],
+              ),
+          ),
+          ),
+        ),
+    ),
+    );
+  }
+}
+
+
+enum Gender { male, female, prefernottosay }
+
+class Question2 extends StatefulWidget {
+  const Question2({super.key});
+
+  @override
+  State<Question2> createState() => _Question2State();
+}
+
+class _Question2State extends State<Question2> {
+  Gender? _character = Gender.male;
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController datePickerController = TextEditingController();
+
+  onTapFunction({required BuildContext context}) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      lastDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      initialDate: DateTime.now(),
+    );
+    if (pickedDate != null) {
+  datePickerController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+}
+  }
+
+  void _validateAndProceed() {
+    if (_formKey.currentState?.validate() ?? false) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Question3()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: white,
+      ),
+      body: SingleChildScrollView(
+      child:Container(
+        color: Colors.white,
+        child: Center(
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(10.0),
+            width: 350.0,
+            height: 670.0,
+            decoration: BoxDecoration(
+              color: backgroundColor2,
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Column(
+              children: [
+                LinearPercentIndicator(
+                  lineHeight: 25.0,
+                  barRadius: const Radius.circular(20.0),
+                  percent: 0.5,
+                  animation: true,
+                  animationDuration: 500,
+                  backgroundColor: colorDark,
+                  progressColor: colorLight,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Just a few details about you",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'OpenSauce',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      const Text(
+                        "What is your gender?",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                        ),
+                      ),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: const Text('Male'),
+                              leading: Radio(
+                                value: Gender.male,
+                                groupValue: _character,
+                                onChanged: (Gender? value) {
+                                  setState(() {
+                                    _character = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            ListTile(
+                              title: const Text('Female'),
+                              leading: Radio(
+                                value: Gender.female,
+                                groupValue: _character,
+                                onChanged: (Gender? value) {
+                                  setState(() {
+                                    _character = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            ListTile(
+                              title: const Text('Prefer not say'),
+                              leading: Radio(
+                                value: Gender.prefernottosay,
+                                groupValue: _character,
+                                onChanged: (Gender? value) {
+                                  setState(() {
+                                    _character = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 50),
+                            const Text(
+                              "Date of birth",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: 250,
+                              child: TextFormField(
+                                controller: datePickerController,
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  hintText: "Click here to select date",
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintStyle: const TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                ),
+                                onTap: () => onTapFunction(context: context),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please fill in the required information';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PrettyWaveButton(
+                            backgroundColor: Colors.white,
+                            horizontalPadding: 50,
+                            child: const Text(
+                              'Back',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignUpQuestions()),
+                              );
+                            },
+                          ),
+                          PrettyWaveButton(
+                            backgroundColor: colorLight,
+                            horizontalPadding: 50,
+                            onPressed: _validateAndProceed,
+                            child: const Text(
+                              'Next',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+    );
+  }
+}
+
+
+
+class Question3 extends StatefulWidget {
+  const Question3({super.key});
+
+  @override
+  State<Question3> createState() => _Question3State();
+}
+
+class _Question3State extends State<Question3> {
+
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController heightController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
+
+  @override
+  void dispose() {
+    heightController.dispose();
+    weightController.dispose();
+    super.dispose();
+  }
+
+   void _validateAndProceed() {
+    if (_formKey.currentState?.validate() ?? false) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const CreateAccount()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: white,
+      ),
+      body: SingleChildScrollView(
+      child:Container(
+      color: white,
+      child: Center(
+        child:Container(
+          alignment:Alignment.center,
+          padding: const EdgeInsets.all(10.0),
+          width: 350.0,
+          height: 670.0,
+          decoration: BoxDecoration(
+            color: backgroundColor2,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+            child: Column(
+              children: [
+                LinearPercentIndicator(
+                  lineHeight: 25.0,
+                  barRadius: const Radius.circular(20.0),
+                  percent: 0.75,
+                  animation: true,
+                  animationDuration: 500,
+                  backgroundColor: colorDark,
+                  progressColor: colorLight,          
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  child: Column(
+                    children: [
+                      Text("Your body metrics",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: black,
+                        fontFamily: 'OpenSauce',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 40),
+                Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller:heightController,
+                      keyboardType: TextInputType.number,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.fromLTRB(10,12,0,0),
+                          child: Text('cm',
+                          style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 15,
+                          color: black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        ),
+                        ),
+                        filled: true,
+                        fillColor: white,
+                        labelText: 'Height',
+                        labelStyle: const TextStyle(
+                          color: Colors.black26,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your height';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 40),
+                    TextFormField(
+                      controller:weightController,
+                      keyboardType: TextInputType.number,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.fromLTRB(10,12,0,0),
+                          child: Text('kg',
+                          style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 15,
+                          color: black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        ),
+                        ),
+                        filled: true,
+                        fillColor: white,
+                        labelText: 'Weight',
+                        labelStyle: const TextStyle(
+                          color: Colors.black26,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your weight';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+                const SizedBox(height: 60),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PrettyWaveButton(
+                  backgroundColor: white,
+                  horizontalPadding: 50,
+                  child: const Text(
+                    'Back',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => 
+                    const Question2()),
+                    );
+                  },
+                ),
+                PrettyWaveButton(
+                  backgroundColor: colorLight,
+                  horizontalPadding: 50,
+                  onPressed: _validateAndProceed,
+                  child: const Text(
+                    'Next',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                  ],
+                ),
+              ],
+              ),
+          ),
+          ],
+          ),
+        ),
+    ),
+      ),
+      ),
+    );
+  }
+}
+
+
+lass CreateAccount extends StatefulWidget {
+  const CreateAccount({super.key});
+
+  @overricde
+  State<CreateAccount> createState() => _CreateAccountState();
+}
+
+class _CreateAccountState extends State<CreateAccount> {
+  final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  bool _isLoading = false; // Track loading state
+  bool isChecked = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _createAccountWithEmailAndPassword() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (!isChecked) {
+        Get.snackbar('Error', 'Please agree to the terms of service and privacy policy',
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        final UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+        if (userCredential.user != null) {
+          Get.offAll(() => const MainScreen()); // Replace stack with MainScreen
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage;
+        switch (e.code) {
+          case 'email-already-in-use':
+            errorMessage = 'This email is already registered.';
+            break;
+          case 'invalid-email':
+            errorMessage = 'Invalid email format.';
+            break;
+          case 'weak-password':
+            errorMessage = 'Password is too weak (minimum 6 characters).';
+            break;
+          default:
+            errorMessage = 'Sign-up failed: ${e.message}';
+        }
+        Get.snackbar('Error', errorMessage, snackPosition: SnackPosition.BOTTOM);
+      } catch (e) {
+        Get.snackbar('Error', 'An unexpected error occurred: $e', snackPosition: SnackPosition.BOTTOM);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: white,
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          color: white,
+          child: Center(
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10.0),
+              width: 350.0,
+              height: 770.0,
+              decoration: BoxDecoration(
+                color: backgroundColor2,
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Column(
+                children: [
+                  LinearPercentIndicator(
+                    lineHeight: 25.0,
+                    barRadius: const Radius.circular(20.0),
+                    percent: 1.0,
+                    animation: true,
+                    animationDuration: 500,
+                    backgroundColor: colorDark,
+                    progressColor: colorLight,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Create Account",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'OpenSauce',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: black,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            suffixIcon: const Icon(Icons.email, color: Colors.black),
+                            filled: true,
+                            fillColor: white,
+                            labelText: 'Email',
+                            labelStyle: const TextStyle(
+                              color: Colors.black54,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your Email';
+                            }
+                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: passwordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          autocorrect: false,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: white,
+                            labelText: 'Password',
+                            labelStyle: const TextStyle(
+                              color: Colors.black54,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your Password';
+                            }
+                            if (value.length < 6) {
+                              return 'Password must be at least 6 characters';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: confirmPasswordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          autocorrect: false,
+                          obscureText: !_isPasswordVisible,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: white,
+                            labelText: 'Confirm Password',
+                            labelStyle: const TextStyle(
+                              color: Colors.black54,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please confirm your Password';
+                            }
+                            if (value != passwordController.text) {
+                              return 'Passwords do not match';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  CheckboxListTile(
+                    contentPadding: const EdgeInsets.all(0),
+                    title: Text(
+                      "I agree to terms of service and privacy policy",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 11,
+                        color: black,
+                      ),
+                    ),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    value: isChecked,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isChecked = value!;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  PrettyWaveButton(
+                    backgroundColor: colorLight,
+                    horizontalPadding: 120,
+                    onPressed: () {
+                      if (!_isLoading) {
+                        _createAccountWithEmailAndPassword();
+                      }
+                    },
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 3,
+                        width: size.width * 0.17,
+                        color: Colors.black12,
+                      ),
+                      Text(
+                        "  Or continue with  ",
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: colorDark,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Container(
+                        height: 3,
+                        width: size.width * 0.17,
+                        color: Colors.black12,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      socialIcon("images/google.png"),
+                    ],
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed('/login');
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Already a member? ",
+                            style: TextStyle(
+                              color: colorDark,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w300,
+                              fontSize: 16,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Login",
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: colorLight,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      PrettyWaveButton(
+                        backgroundColor: white,
+                        horizontalPadding: 50,
+                        child: const Text(
+                          'Back',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Question3()),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container socialIcon(String image) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      child: Image.asset(image, height: 35),
+    );
+  }
+}
