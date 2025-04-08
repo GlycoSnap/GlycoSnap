@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1018153372345",
+    "project_id": "glycosnap-c605c",
+    "storage_bucket": "glycosnap-c605c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018153372345:android:8343401213660fde35a968",
+        "android_client_info": {
+          "package_name": "com.example.glycosnap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeuWXoyFNncTY_EBq-GEqaaq8h-bIWJLc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

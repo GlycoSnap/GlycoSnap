@@ -1,0 +1,15 @@
+# Development image (no APK build)
+FROM ghcr.io/cirruslabs/flutter:3.16.0
+
+# Set working directory
+WORKDIR /app
+
+# Copy dependency files and install dependencies
+COPY pubspec.yaml pubspec.lock ./
+RUN flutter pub get
+
+# Copy the rest of the project files
+COPY . .
+
+# Run the app in development mode
+CMD ["flutter", "run", "--debug"]

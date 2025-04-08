@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "glycosnap-c605c",
+  "private_key_id": "47c0627c422fa979dea5996a1b821ce29be90451",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDU0hVNjpv9hZ0a\nReZC/NWIY0epavjMMq4lAoAsQzSlgR2GPyTIYRYL7EZJTThzWwN9SggqHSzHDdbA\nxhnRxTCJzCzKGLcnyo+Shqy2lYBn4gAdVomCARxT/7PF+RULhHUasihqvuNWVo2p\nGNYgcWQT7Xx2MRmiS+FP4IzDJF3bFY7qgq2TSaKXeMmIJpesxBMwDTjJhpCFqQOA\nBAUciZzBDqX8GXH2dafWQNXsRkXV/dyKXI2WgMG7Dvepg/N/AdO3js3M+FTFpN3a\ncQbAAPxaBVyFN0TYfGL1b+nRZFo5QdyUQpHMIySsCxtWKIsss7NXHsGti4mLNxVM\nfGS1IjwjAgMBAAECggEABecyi71Yv/5R88BxmR+95TO/xp1pe5yCQ740g5sfnYxI\ndIim2AoIBwT4PstDYBZrsTDPANVgqxV2r0/aDSgCPH2V1nXmCqwDMdDGKfsD80hh\nBsSiOXbCFuW2UleiM6NqbiGinly0yJh2WHTlvO5NlNdBsbOTSZ2qM8F/lgrEXFxz\n71IdqnTBdpt7KBNmpG9FLfaWzaHJGPtUpnMrhKjBipctwBd9a9Q5OtGR6tZsyI9g\nKu2d1RpnjWelSdjX0E6NyGLw9yOBDdjJwbht/rylJtkgYTPSBDkCcHTsr61DIwzC\nFPYOHQsTiyM4EfNR1Cae9NPF/BgmDLjbg6D72WuZRQKBgQDwGnI8cn5I28Y/kyAg\nntf4dSwIVP3hsJbRFtX35u3FrvlGWwUVI/Hc0G66JrfHvSe0qBPvxB1HoAWzjZ4N\nagQz6zfo85fnz+73dZ1vzNTKON7K491xDSdIQFtbyPpHOU0Ct/DfW1XYB2/MThpH\nmuvloWzWIzmIk8IkMt7Y60153QKBgQDi6TfaFL2/pAvbQNQ6wbNDv4k6kEmtbu9G\n1pSyDEjLW05WReg8JwmeC8mCHnbRC9WngDRfAWo2+0B3awA19OyeU/KfXPvZFse5\nNe2ow7e5Xw1IJIbKbFdJrYqwQ1WQLK8NfWHntNFxCkUv7ojciQJlXT8sLNDeXWe3\nvQug/xIt/wKBgFm2F+7b/LFuZIGGkF9/2kQ8S4qFbyLvnzpapPHud/L/8KXIBnsi\nphESU/z70HkyBO7sSh6xERuc/+RZyq9KaG2ZupcwxRZZS/lsGboXN36jhyMZxrih\n6IaHfVsrGdCY6VxVrAtYjhecl7oniIwup2tySD8uhCWyx7xMwZUdPiKFAoGBAKfY\n2AWrXgjKcjLHK7Yi3lX48qutW7K84qZFyExEJfy3F6VdpMIKJmUQVwi3PDC6TlrO\nzO6R/12YUUGElu1StU0Qz+HuSCV3YlmweJJj5B1tIEgDLOnDZnYLtxFXXY1+YCbc\nXnWlHWA+tpsUGYz4lBsi9L3akM5LzZLudhGrXGlFAoGAUfiD8TqUyMnTMC2t9heT\nArnxm2rw/vzHX66otRYN9nT+NAEZ/YBKocSMz8z3M5MmUZ54tcWGa0OWm0zN0OuN\nazyXVFp85D5UaLKwGz1CswhlI5o6SfxYyYIFOvxeBReDeBIAcD6nBaPK0ALHLdOc\n3e6MfY0D7br6hSQA47WzEHI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@glycosnap-c605c.iam.gserviceaccount.com",
+  "client_id": "116558580574839758889",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40glycosnap-c605c.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
