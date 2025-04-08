@@ -1,4 +1,3 @@
-<<<<<<< mobile-app
 =======
 # GlycoSnap
 This repository contains the mobile app and website
@@ -9,7 +8,6 @@ This repository contains the mobile app and website
 ✅ Glycemic load estimation
 ✅ Portion size approximation
 
->>>>>>> main
 ### Mobile app
 This branch contains:
 - A Flask backend (glycosnap_flask) running in a Docker container.
@@ -58,7 +56,6 @@ The backend (model) runs inside a Docker container. Note: Building the container
 ```
 final String baseUrl = 'http://192.168.100.12:5000/predict';
 ```
->>>>>>> main
 - Connect Your Mobile Device: Connect your phone via USB (or start an emulator).
 - Ensure that your device is detected by running:
 ```
