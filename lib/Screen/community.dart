@@ -35,18 +35,18 @@ class _CommunityState extends State<Community> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: lightBackground,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: lightBackground,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         toolbarHeight: 80,
         title: Container(
-          child: const Text(
+          child: Text(
             'Articles',
             style: TextStyle(
               fontFamily: 'PoppinsBold',
               fontSize: 26,
-              color: Color(0xff0C3B60),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -54,10 +54,10 @@ class _CommunityState extends State<Community> {
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.bookmark,
                 size: 35,
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               tooltip: 'See saved articles',
               onPressed: () {},
@@ -69,12 +69,14 @@ class _CommunityState extends State<Community> {
         future: futureArticles,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary));
           } else if (snapshot.hasError) {
             print('Error: ${snapshot.error.toString()}');
             return Center(child: Text('Error: ${snapshot.error.toString()}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No articles found'));
+            return Center(child: Text('No articles found'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -91,7 +93,8 @@ class _CommunityState extends State<Community> {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('No full article available.')),
+                        const SnackBar(
+                            content: Text('No full article available.')),
                       );
                     }
                   },
@@ -100,10 +103,14 @@ class _CommunityState extends State<Community> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 231, 251, 249),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
                     ),
                     padding: const EdgeInsets.only(right: 10),
-                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
                     child: Stack(
                       children: [
                         Row(
@@ -116,32 +123,40 @@ class _CommunityState extends State<Community> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      'Category', 
+                                    Text(
+                                      'Category',
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontSize: 14,
-                                        color: Colors.black45,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.6),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      article.title, // Display article title
-                                      style: const TextStyle(
+                                      article.title,
+                                      style: TextStyle(
                                         fontFamily: 'PoppinsBold',
                                         fontSize: 17,
-                                        color: Colors.black,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
                                       ),
                                       maxLines: 2,
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      article.description, // Display article description
-                                      style: const TextStyle(
+                                      article.description,
+                                      style: TextStyle(
                                         fontFamily: 'OpenSauce',
                                         fontSize: 13,
-                                        color: Colors.black38,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.6),
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 5,
@@ -153,15 +168,14 @@ class _CommunityState extends State<Community> {
                             Container(
                               alignment: Alignment.bottomRight,
                               child: IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.bookmark_add_outlined,
                                   size: 25,
-                                  color: Colors.black,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                                 tooltip: 'Save article',
-                                onPressed: () {
-                                  // Implement save article functionality here
-                                },
+                                onPressed: () {},
                               ),
                             ),
                           ],

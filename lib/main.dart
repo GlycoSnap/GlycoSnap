@@ -15,9 +15,9 @@ import 'package:glycosnap/Screen/slides.dart';
 import 'package:glycosnap/Screen/splash_screen.dart';
 import 'package:glycosnap/Screen/login.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:glycosnap/Utils/colors.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:glycosnap/Utils/theme.dart';
 
 const List<TabItem> items = [
   TabItem(
@@ -44,7 +44,7 @@ const List<TabItem> items = [
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize SharedPreferences
   final prefs = await SharedPreferences.getInstance();
   bool isDarkMode = prefs.getBool('darkMode') ?? false;
@@ -59,8 +59,6 @@ Future<void> main() async {
     }
 
     await FirebaseAppCheck.instance.activate();
-
-
 
     runApp(
       ChangeNotifierProvider(
@@ -81,9 +79,40 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      title: 'GlycoSnap',
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.light(
+          primary: AppTheme.lightPrimary,
+          onPrimary: AppTheme.lightOnPrimary,
+          secondary: AppTheme.lightSecondary,
+          onSecondary: AppTheme.lightOnPrimary,
+          error: AppTheme.lightError,
+          onError: AppTheme.lightOnSurface,
+          background: AppTheme.lightSurface,
+          onBackground: AppTheme.lightOnSurface,
+          surface: AppTheme.lightSurface,
+          onSurface: AppTheme.lightOnSurface,
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.dark(
+          primary: AppTheme.darkPrimary,
+          onPrimary: AppTheme.darkOnPrimary,
+          secondary: AppTheme.darkSecondary,
+          onSecondary: AppTheme.darkOnPrimary,
+          error: AppTheme.darkError,
+          onError: AppTheme.darkOnSurface,
+          background: AppTheme.darkSurface,
+          onBackground: AppTheme.darkOnSurface,
+          surface: AppTheme.darkSurface,
+          onSurface: AppTheme.darkOnSurface,
+        ),
+      ),
+      themeMode: AppTheme.themeMode,
       home: const MySplashScreen(),
       initialRoute: '/',
       getPages: [
@@ -134,6 +163,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     print('Building MainScreen'); // Debug print
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -143,24 +173,38 @@ class _MainScreenState extends State<MainScreen> {
         },
         children: _pages,
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(bottom: 30, right: 32, left: 32),
-        child: BottomBarDefault(
-          items: items,
-          backgroundColor: backgroundColor3,
-          color: Colors.black38,
-          colorSelected: colorDark,
-          iconSize: 30,
-          indexSelected: visit,
-          titleStyle: const TextStyle(
-            fontSize: 10,
-            color: Colors.black,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.bold,
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 70,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
-          onTap: (int index) {
-            onTabTapped(index);
-          },
+          child: BottomBarDefault(
+            items: items,
+            backgroundColor: Colors.transparent,
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+            colorSelected: Theme.of(context).colorScheme.primary,
+            iconSize: 24,
+            indexSelected: visit,
+            titleStyle: TextStyle(
+              fontSize: 10,
+              color: Theme.of(context).colorScheme.onSurface,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+            ),
+            onTap: (int index) {
+              onTabTapped(index);
+            },
+          ),
         ),
       ),
     );

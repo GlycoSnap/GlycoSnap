@@ -73,18 +73,19 @@ class _ReviewState extends State<Review> {
         EasyInfiniteDateTimelineController();
 
     return Scaffold(
-      backgroundColor: const Color(0xffFDFFFF),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xffFDFFFF),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         toolbarHeight: 80,
         title: Container(
-          child: const Text(
+          child: Text(
             'Weekly review',
             style: TextStyle(
               fontFamily: 'OpenSauce',
               fontSize: 26,
               fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -93,8 +94,8 @@ class _ReviewState extends State<Review> {
         children: [
           Container(
             padding: const EdgeInsets.only(left: 10),
-            decoration: const BoxDecoration(
-              color: Color(0xffFDFFFF),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -103,11 +104,19 @@ class _ReviewState extends State<Review> {
                   EasyDateTimeLine(
                     initialDate: DateTime.now(),
                     onDateChange: _onDateChange,
-                    headerProps: const EasyHeaderProps(
+                    headerProps: EasyHeaderProps(
                       monthPickerType: MonthPickerType.dropDown,
                       dateFormatter: DateFormatter.fullDateDMonthAsStrY(),
+                      monthStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontFamily: 'Poppins',
+                      ),
+                      selectedDateStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontFamily: 'Poppins',
+                      ),
                     ),
-                    dayProps: const EasyDayProps(
+                    dayProps: EasyDayProps(
                       dayStructure: DayStructure.dayStrDayNum,
                       activeDayStyle: DayStyle(
                         decoration: BoxDecoration(
@@ -116,31 +125,83 @@ class _ReviewState extends State<Review> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Color(0xff47B2A5),
-                              Color.fromARGB(255, 46, 116, 169),
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.secondary,
                             ],
                           ),
+                        ),
+                      ),
+                      inactiveDayStyle: DayStyle(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
+                        dayNumStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'Poppins',
+                        ),
+                        dayStrStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'Poppins',
                         ),
                       ),
                     ),
                   ),
                   Container(
+                    margin: const EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
                     child: SfCartesianChart(
-                      primaryXAxis: const CategoryAxis(),
-                      legend: const Legend(isVisible: true),
+                      primaryXAxis: CategoryAxis(
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                      primaryYAxis: NumericAxis(
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                      legend: Legend(
+                        isVisible: true,
+                        textStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
                       tooltipBehavior: _tooltipBehavior,
                       series: <CartesianSeries>[
                         LineSeries<SalesData, String>(
                           name: 'Glycemic Load',
                           dataSource: salesData,
-                          color: const Color.fromARGB(255, 10, 113, 113),
+                          color: Theme.of(context).colorScheme.primary,
                           xValueMapper: (SalesData sales, _) => sales.day,
                           yValueMapper: (SalesData sales, _) => sales.sales,
-                          dataLabelSettings: const DataLabelSettings(isVisible: true),
-                          markerSettings: const MarkerSettings(
+                          dataLabelSettings: DataLabelSettings(
+                            isVisible: true,
+                            textStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                          markerSettings: MarkerSettings(
                             isVisible: true,
                             shape: DataMarkerType.circle,
-                            color: Color.fromARGB(255, 10, 113, 113),
+                            color: Theme.of(context).colorScheme.primary,
+                            borderWidth: 2,
+                            borderColor: Theme.of(context).colorScheme.surface,
                           ),
                         ),
                         if (selectedDay.isNotEmpty)
@@ -150,420 +211,270 @@ class _ReviewState extends State<Review> {
                             xValueMapper: (SalesData sales, _) => sales.day,
                             yValueMapper: (SalesData sales, _) =>
                                 selectedDay == sales.day ? sales.sales : 0,
-                            color: const Color(0xff83AFAF).withOpacity(0.5),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondary
+                                .withOpacity(0.5),
                             borderRadius: BorderRadius.circular(5),
                           ),
                       ],
                     ),
                   ),
 
-                  //breakfast
+                  // Meal cards
+                  _buildMealCard(
+                    context,
+                    'Breakfast',
+                    'images/breakfast.jpeg',
+                    '78',
+                    '876',
+                  ),
+                  _buildMealCard(
+                    context,
+                    'Lunch',
+                    'images/lunch.jpeg',
+                    '36',
+                    '1127',
+                  ),
+                  _buildMealCard(
+                    context,
+                    'Supper',
+                    'images/supper.jpeg',
+                    '56',
+                    '635',
+                  ),
+
+                  // Daily summary
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 194, 227, 226),
-                    ),
-                    child: Row(
-                    children: [
-                      Padding(padding: const EdgeInsets.fromLTRB(20, 10, 30, 10),
-                        child: ClipOval(
-                          child: Image.asset(
-                            'images/breakfast.jpeg',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover, 
-                          ),
-                        ),
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      'Daily summary',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Breakfast',
-                          style: TextStyle(
-                            fontFamily: 'OpenSauce',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),),
-                          const SizedBox(height: 10),
-                          RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Glycemic Load: ',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '78',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Calories: ',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '876',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  ),
-                  ),
-
-                  //lunch
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 194, 227, 226),
-                    ),
-                    child: Row(
-                    children: [
-                      Padding(padding: const EdgeInsets.fromLTRB(20, 10, 30, 10),
-                        child: ClipOval(
-                          child: Image.asset(
-                            'images/lunch.jpeg',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover, 
-                          ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Lunch',
-                          style: TextStyle(
-                            fontFamily: 'OpenSauce',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),),
-                          const SizedBox(height: 10),
-                          RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Glycemic Load: ',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '36',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Calories: ',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '1127',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  ),
-                  ),
-
-                  //supper
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 194, 227, 226),
-                    ),
-                    child: Row(
-                    children: [
-                      Padding(padding: const EdgeInsets.fromLTRB(20, 10, 30, 10),
-                        child: ClipOval(
-                          child: Image.asset(
-                            'images/supper.jpeg',
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover, 
-                          ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Supper',
-                          style: TextStyle(
-                            fontFamily: 'OpenSauce',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),),
-                          const SizedBox(height: 10),
-                          RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Glycemic Load: ',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '56',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Calories: ',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '635',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  ),
-                  ),
-
-
-                  const Text('Daily summary',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    children: [
-                      Stack(
-                        children: [
-                          Container(
-                            width: 370,
-                            height: 180,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: const Color(0xffBEE1DD),
-                            ),
-                          ),
-                          Positioned(
-                            top: 15,
-                            left: 6,
-                            child: CircularPercentIndicator(
-                              animation: true,
-                              animationDuration: 3000,
-                              radius: 70.0,
-                              lineWidth: 11.0,
-                              percent: 0.6,
-                              progressColor: const Color(0xff071332),
-                              backgroundColor: white,
-                              circularStrokeCap: CircularStrokeCap.round,
-                            ),
-                          ),
-                          Positioned(
-                            top: 38,
-                            left: 28,
-                            child: CircularPercentIndicator(
-                              animation: true,
-                              animationDuration: 3000,
-                              radius: 48.0,
-                              lineWidth: 10.0,
-                              percent: 0.4,
-                              progressColor: const Color(0xff3BBF80),
-                              backgroundColor: white,
-                              circularStrokeCap: CircularStrokeCap.round,
-                            ),
-                          ),
-                          Positioned(
-                            top: 50,
-                            left: 160,
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 20.0,
-                                          height: 20.0,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Color(0xff071332),
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 5),
-                                          child: Text(
-                                            'Glycemic Load',
-                                            style: TextStyle(
-                                              fontFamily: 'OpenSauce',
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 20),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 20.0,
-                                          height: 20.0,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Color(0xff3BBF80),
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 5),
-                                          child: Text(
-                                            'Calories',
-                                            style: TextStyle(
-                                              fontFamily: 'OpenSauce',
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Positioned(
-                            top: 50,
-                            left: 310,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '54.6',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  '763 cal',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
+                  _buildSummaryCard(context),
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildMealCard(BuildContext context, String mealName, String imagePath,
+      String glycemicLoad, String calories) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 30, 10),
+              child: ClipOval(
+                child: Image.asset(
+                  imagePath,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  mealName,
+                  style: TextStyle(
+                    fontFamily: 'OpenSauce',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _buildInfoRow(
+                  context,
+                  'Glycemic Load: ',
+                  glycemicLoad,
+                ),
+                const SizedBox(height: 8),
+                _buildInfoRow(
+                  context,
+                  'Calories: ',
+                  '$calories cal',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: label,
+            style: TextStyle(
+              fontFamily: 'OpenSauce',
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          TextSpan(
+            text: value,
+            style: TextStyle(
+              fontFamily: 'OpenSauce',
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryCard(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Container(
+        width: 370,
+        height: 180,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 15,
+              left: 6,
+              child: CircularPercentIndicator(
+                animation: true,
+                animationDuration: 3000,
+                radius: 70.0,
+                lineWidth: 11.0,
+                percent: 0.6,
+                progressColor: Theme.of(context).colorScheme.primary,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                circularStrokeCap: CircularStrokeCap.round,
+              ),
+            ),
+            Positioned(
+              top: 38,
+              left: 28,
+              child: CircularPercentIndicator(
+                animation: true,
+                animationDuration: 3000,
+                radius: 48.0,
+                lineWidth: 10.0,
+                percent: 0.4,
+                progressColor: Theme.of(context).colorScheme.secondary,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                circularStrokeCap: CircularStrokeCap.round,
+              ),
+            ),
+            Positioned(
+              top: 50,
+              left: 160,
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildLegendItem(
+                        context,
+                        Theme.of(context).colorScheme.primary,
+                        'Glycemic Load',
+                      ),
+                      const SizedBox(height: 20),
+                      _buildLegendItem(
+                        context,
+                        Theme.of(context).colorScheme.secondary,
+                        'Calories',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 50,
+              left: 310,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '54.6',
+                    style: TextStyle(
+                      fontFamily: 'OpenSauce',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    '763 cal',
+                    style: TextStyle(
+                      fontFamily: 'OpenSauce',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegendItem(BuildContext context, Color color, String text) {
+    return Row(
+      children: [
+        Container(
+          width: 20.0,
+          height: 20.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontFamily: 'OpenSauce',
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

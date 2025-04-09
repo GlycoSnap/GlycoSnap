@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int visit = 0;
+  String? selectedMeal; // Track which meal is currently selected
 
   double glycemicLoad = 0; // Fetch from storage
   double calories = 0; // Fetch from storage
@@ -34,10 +35,10 @@ class _HomePageState extends State<HomePage> {
     String dayNumber = dateParts[1];
 
     return Scaffold(
-      backgroundColor: lightBackground,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: lightBackground,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         toolbarHeight: size.height * 0.1, // 10% of screen height
         title: SizedBox(
           width: size.width * 0.4, // 40% of screen width
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(
                 Icons.notifications,
                 size: size.width * 0.08, // Scaled icon size
-                color: colorDark,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                           fontFamily: 'OpenSauce',
                           fontSize: size.width * 0.045, // Scaled font size
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       TextSpan(
@@ -86,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           fontFamily: 'OpenSauce',
                           fontSize: size.width * 0.045, // Scaled font size
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -106,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontFamily: 'OpenSauce',
                               fontSize: size.width * 0.045, // Scaled font size
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           TextSpan(
@@ -115,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                               fontFamily: 'OpenSauce',
                               fontSize: size.width * 0.045, // Scaled font size
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -139,19 +140,28 @@ class _HomePageState extends State<HomePage> {
                     height: size.height * 0.25, // 25% of screen height
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: const Color.fromARGB(255, 205, 233, 230),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.3),
                         width: 1,
                       ),
-                      boxShadow: const [
+                      boxShadow: [
                         BoxShadow(
-                          color: Color.fromARGB(255, 162, 196, 193),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.2),
                           spreadRadius: 1,
                           blurRadius: 5,
-                          offset: Offset(0, 0),
+                          offset: const Offset(0, 0),
                         ),
                       ],
                       borderRadius: BorderRadius.circular(20.0),
-                      color: const Color.fromARGB(255, 205, 233, 230),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
                     ),
                     child: Stack(
                       children: [
@@ -167,8 +177,10 @@ class _HomePageState extends State<HomePage> {
                                         mealProvider.breakfast) /
                                     100)
                                 .clamp(0.0, 1.0),
-                            progressColor: const Color(0xff071332),
-                            backgroundColor: Colors.white,
+                            progressColor:
+                                Theme.of(context).colorScheme.primary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
                             circularStrokeCap: CircularStrokeCap.round,
                           ),
                         ),
@@ -182,8 +194,9 @@ class _HomePageState extends State<HomePage> {
                             lineWidth: size.width * 0.025, // Scaled line width
                             percent: (calories / 2000).clamp(0.0, 1.0),
                             progressColor:
-                                const Color.fromARGB(255, 0, 154, 181),
-                            backgroundColor: Colors.white,
+                                Theme.of(context).colorScheme.secondary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
                             circularStrokeCap: CircularStrokeCap.round,
                           ),
                         ),
@@ -208,9 +221,10 @@ class _HomePageState extends State<HomePage> {
                                         size.width * 0.05, // Scaled circle size
                                     height:
                                         size.width * 0.05, // Scaled circle size
-                                    decoration: const BoxDecoration(
+                                    decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Color(0xff071332),
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                   Padding(
@@ -223,7 +237,9 @@ class _HomePageState extends State<HomePage> {
                                         fontFamily: 'OpenSauce',
                                         fontSize: size.width *
                                             0.035, // Scaled font size
-                                        color: Colors.black,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
                                       ),
                                     ),
                                   ),
@@ -239,9 +255,11 @@ class _HomePageState extends State<HomePage> {
                                         size.width * 0.05, // Scaled circle size
                                     height:
                                         size.width * 0.05, // Scaled circle size
-                                    decoration: const BoxDecoration(
+                                    decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Color.fromARGB(255, 0, 154, 181),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     ),
                                   ),
                                   Padding(
@@ -254,7 +272,9 @@ class _HomePageState extends State<HomePage> {
                                         fontFamily: 'OpenSauce',
                                         fontSize: size.width *
                                             0.035, // Scaled font size
-                                        color: Colors.black,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
                                       ),
                                     ),
                                   ),
@@ -280,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                                   fontSize:
                                       size.width * 0.035, // Scaled font size
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xff071332),
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                               SizedBox(
@@ -293,7 +313,8 @@ class _HomePageState extends State<HomePage> {
                                   fontSize:
                                       size.width * 0.035, // Scaled font size
                                   fontWeight: FontWeight.bold,
-                                  color: const Color.fromARGB(255, 0, 132, 156),
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                 ),
                               ),
                             ],
@@ -303,364 +324,163 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                // Breakfast
+
+                // Meal sections
                 SizedBox(height: size.height * 0.025), // 2.5% of screen height
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      backgroundColor: const Color(0xFFE5F6F6),
-                      collapsedBackgroundColor: const Color(0xFFE5F6F6),
-                      title: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: size.width * 0.04), // 4% of screen width
-                            child: Container(
-                              width: size.width * 0.1, // 10% of screen width
-                              height: size.width *
-                                  0.1, // 10% of screen width (square)
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Image.asset(
-                                'images/breakfast.jpeg',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: size.width * 0.08), // 8% of screen width
-                            child: Text(
-                              'Breakfast',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: size.width * 0.06, // Scaled font size
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.25, // 25% of screen height
-                          child: ListView(
-                            children: mealProvider.breakfast.map((meal) {
-                              String category;
-                              Color textColor;
-
-                              if (meal.glycemicLoad >= 20) {
-                                category = "High";
-                                textColor = Colors.red;
-                              } else if (meal.glycemicLoad >= 11) {
-                                category = "Medium";
-                                textColor = Colors.orange;
-                              } else {
-                                category = "Low";
-                                textColor = Colors.green;
-                              }
-                              return Container(
-                                margin: EdgeInsets.all(
-                                    size.width * 0.025), // Scaled margin
-                                padding: EdgeInsets.all(
-                                    size.width * 0.025), // Scaled padding
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      meal.name,
-                                      style: TextStyle(
-                                        color: colorDark,
-                                        fontSize: size.width *
-                                            0.04, // Scaled font size
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height: size.height *
-                                            0.005), // 0.5% of screen height
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Glycemic Load: ${meal.glycemicLoad.toStringAsFixed(1)}',
-                                          style: TextStyle(
-                                            color: black,
-                                            fontSize: size.width *
-                                                0.035, // Scaled font size
-                                          ),
-                                        ),
-                                        Text(
-                                          category,
-                                          style: TextStyle(
-                                            color: textColor,
-                                            fontSize: size.width *
-                                                0.035, // Scaled font size
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                _buildMealSection(
+                  context,
+                  size,
+                  'Breakfast',
+                  'images/breakfast.jpeg',
+                  mealProvider.breakfast,
+                  'breakfast',
                 ),
-
-                // Lunch
                 SizedBox(height: size.height * 0.03), // 3% of screen height
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      backgroundColor: backgroundColor3,
-                      collapsedBackgroundColor: backgroundColor3,
-                      title: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: size.width * 0.04), // 4% of screen width
-                            child: Container(
-                              width: size.width * 0.1, // 10% of screen width
-                              height: size.width *
-                                  0.1, // 10% of screen width (square)
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Image.asset(
-                                'images/lunch.jpeg',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: size.width * 0.08), // 8% of screen width
-                            child: Text(
-                              'Lunch',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: size.width * 0.06, // Scaled font size
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.25, // 25% of screen height
-                          child: ListView(
-                            children: mealProvider.lunch.map((meal) {
-                              String category;
-                              Color textColor;
-
-                              if (meal.glycemicLoad >= 20) {
-                                category = "High";
-                                textColor = Colors.red;
-                              } else if (meal.glycemicLoad >= 11) {
-                                category = "Medium";
-                                textColor = Colors.orange;
-                              } else {
-                                category = "Low";
-                                textColor = Colors.green;
-                              }
-                              return Container(
-                                margin: EdgeInsets.all(
-                                    size.width * 0.025), // Scaled margin
-                                padding: EdgeInsets.all(
-                                    size.width * 0.025), // Scaled padding
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      meal.name,
-                                      style: TextStyle(
-                                        color: colorDark,
-                                        fontSize: size.width *
-                                            0.04, // Scaled font size
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height: size.height *
-                                            0.005), // 0.5% of screen height
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Glycemic Load: ${meal.glycemicLoad.toStringAsFixed(1)}',
-                                          style: TextStyle(
-                                            color: black,
-                                            fontSize: size.width *
-                                                0.035, // Scaled font size
-                                          ),
-                                        ),
-                                        Text(
-                                          category,
-                                          style: TextStyle(
-                                            color: textColor,
-                                            fontSize: size.width *
-                                                0.035, // Scaled font size
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                _buildMealSection(
+                  context,
+                  size,
+                  'Lunch',
+                  'images/lunch.jpeg',
+                  mealProvider.lunch,
+                  'lunch',
                 ),
-
-                // Supper
                 SizedBox(height: size.height * 0.03), // 3% of screen height
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      backgroundColor: backgroundColor3,
-                      collapsedBackgroundColor: backgroundColor3,
-                      title: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: size.width * 0.04), // 4% of screen width
-                            child: Container(
-                              width: size.width * 0.1, // 10% of screen width
-                              height: size.width *
-                                  0.1, // 10% of screen width (square)
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Image.asset(
-                                'images/supper.jpeg',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: size.width * 0.08), // 8% of screen width
-                            child: Text(
-                              'Supper',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: size.width * 0.06, // Scaled font size
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      children: [
-                        SizedBox(
-                          height: size.height * 0.25, // 25% of screen height
-                          child: ListView(
-                            children: mealProvider.supper.map((meal) {
-                              String category;
-                              Color textColor;
-
-                              if (meal.glycemicLoad >= 20) {
-                                category = "High";
-                                textColor = Colors.red;
-                              } else if (meal.glycemicLoad >= 11) {
-                                category = "Medium";
-                                textColor = Colors.orange;
-                              } else {
-                                category = "Low";
-                                textColor = Colors.green;
-                              }
-                              return Container(
-                                margin: EdgeInsets.all(
-                                    size.width * 0.025), // Scaled margin
-                                padding: EdgeInsets.all(
-                                    size.width * 0.025), // Scaled padding
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      meal.name,
-                                      style: TextStyle(
-                                        color: colorDark,
-                                        fontSize: size.width *
-                                            0.04, // Scaled font size
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height: size.height *
-                                            0.005), // 0.5% of screen height
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Glycemic Load: ${meal.glycemicLoad.toStringAsFixed(1)}',
-                                          style: TextStyle(
-                                            color: black,
-                                            fontSize: size.width *
-                                                0.035, // Scaled font size
-                                          ),
-                                        ),
-                                        Text(
-                                          category,
-                                          style: TextStyle(
-                                            color: textColor,
-                                            fontSize: size.width *
-                                                0.035, // Scaled font size
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                _buildMealSection(
+                  context,
+                  size,
+                  'Supper',
+                  'images/supper.jpeg',
+                  mealProvider.supper,
+                  'supper',
                 ),
                 SizedBox(height: size.height * 0.03), // Bottom padding
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMealSection(BuildContext context, Size size, String title,
+      String imagePath, List<Meal> meals, String mealType) {
+    final bool isSelected = selectedMeal == mealType;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          backgroundColor: isSelected
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+              : Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          collapsedBackgroundColor: isSelected
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+              : Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          onExpansionChanged: (expanded) {
+            setState(() {
+              selectedMeal = expanded ? mealType : null;
+            });
+          },
+          title: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                    left: size.width * 0.04), // 4% of screen width
+                child: Container(
+                  width: size.width * 0.1, // 10% of screen width
+                  height: size.width * 0.1, // 10% of screen width (square)
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: size.width * 0.08), // 8% of screen width
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: size.width * 0.06, // Scaled font size
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          children: [
+            SizedBox(
+              height: size.height * 0.25, // 25% of screen height
+              child: ListView(
+                children: meals.map((meal) {
+                  String category;
+                  Color textColor;
+
+                  if (meal.glycemicLoad >= 20) {
+                    category = "High";
+                    textColor = Colors.red;
+                  } else if (meal.glycemicLoad >= 11) {
+                    category = "Medium";
+                    textColor = Colors.orange;
+                  } else {
+                    category = "Low";
+                    textColor = Colors.green;
+                  }
+                  return Container(
+                    margin: EdgeInsets.all(size.width * 0.025), // Scaled margin
+                    padding:
+                        EdgeInsets.all(size.width * 0.025), // Scaled padding
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          meal.name,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: size.width * 0.04, // Scaled font size
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                            height:
+                                size.height * 0.005), // 0.5% of screen height
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Glycemic Load: ${meal.glycemicLoad.toStringAsFixed(1)}',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize:
+                                    size.width * 0.035, // Scaled font size
+                              ),
+                            ),
+                            Text(
+                              category,
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize:
+                                    size.width * 0.035, // Scaled font size
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ],
         ),

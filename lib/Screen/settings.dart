@@ -3,6 +3,8 @@ import 'package:glycosnap/Utils/colors.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info_plus/package_info_plus.dart' show PackageInfo;
+import 'package:glycosnap/Utils/theme.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -12,12 +14,11 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-
   bool _isDarkMode = false;
   // Grams setting (true = use grams, false = use an alternative measurement)
   bool _useGrams = true;
-  // Dark mode color - using the color you specified
-  final Color _darkModeColor = const Color(0xFF12181B);
+  // Dark mode color
+  final Color _darkModeColor = AppTheme.darkSurface;
 
   @override
   void initState() {
@@ -60,18 +61,23 @@ class _SettingsState extends State<Settings> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+          backgroundColor:
+              _isDarkMode ? AppTheme.darkSurface : AppTheme.lightSurface,
           title: Text(
             'Feature Not Implemented',
             style: TextStyle(
-              color: _isDarkMode ? Colors.white : Colors.black,
+              color: _isDarkMode
+                  ? AppTheme.darkOnSurface
+                  : AppTheme.lightOnSurface,
               fontFamily: 'Poppins',
             ),
           ),
           content: Text(
             'The $feature feature will be implemented in a future update.',
             style: TextStyle(
-              color: _isDarkMode ? Colors.white : Colors.black,
+              color: _isDarkMode
+                  ? AppTheme.darkOnSurface
+                  : AppTheme.lightOnSurface,
               fontFamily: 'Poppins',
             ),
           ),
@@ -81,7 +87,9 @@ class _SettingsState extends State<Settings> {
               child: Text(
                 'OK',
                 style: TextStyle(
-                  color: _isDarkMode ? Colors.lightBlueAccent : Colors.blue,
+                  color: _isDarkMode
+                      ? AppTheme.darkPrimary
+                      : AppTheme.lightPrimary,
                   fontFamily: 'Poppins',
                 ),
               ),
@@ -98,18 +106,18 @@ class _SettingsState extends State<Settings> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           title: Text(
             'Confirm Logout',
             style: TextStyle(
-              color: _isDarkMode ? Colors.white : Colors.black,
+              color: Theme.of(context).colorScheme.onSurface,
               fontFamily: 'Poppins',
             ),
           ),
           content: Text(
             'Are you sure you want to log out?',
             style: TextStyle(
-              color: _isDarkMode ? Colors.white : Colors.black,
+              color: Theme.of(context).colorScheme.onSurface,
               fontFamily: 'Poppins',
             ),
           ),
@@ -119,22 +127,21 @@ class _SettingsState extends State<Settings> {
               child: Text(
                 'Cancel',
                 style: TextStyle(
-                  color: _isDarkMode ? Colors.white70 : Colors.grey,
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   fontFamily: 'Poppins',
                 ),
               ),
             ),
             TextButton(
               onPressed: () {
-                // Implement actual logout functionality here
                 Navigator.of(context).pop();
-                // Navigate to login screen
-                Get.offAllNamed('/login'); // Make sure you have this route defined
+                Get.offAllNamed('/login');
               },
               child: Text(
                 'Log Out',
                 style: TextStyle(
-                  color: Colors.red,
+                  color: Theme.of(context).colorScheme.error,
                   fontFamily: 'Poppins',
                 ),
               ),
@@ -151,11 +158,14 @@ class _SettingsState extends State<Settings> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+          backgroundColor:
+              _isDarkMode ? AppTheme.darkSurface : AppTheme.lightSurface,
           title: Text(
             'Delete Account',
             style: TextStyle(
-              color: _isDarkMode ? Colors.white : Colors.black,
+              color: _isDarkMode
+                  ? AppTheme.darkOnSurface
+                  : AppTheme.lightOnSurface,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,
             ),
@@ -163,7 +173,9 @@ class _SettingsState extends State<Settings> {
           content: Text(
             'Are you sure you want to delete your account? This action cannot be undone.',
             style: TextStyle(
-              color: _isDarkMode ? Colors.white : Colors.black,
+              color: _isDarkMode
+                  ? AppTheme.darkOnSurface
+                  : AppTheme.lightOnSurface,
               fontFamily: 'Poppins',
             ),
           ),
@@ -173,22 +185,22 @@ class _SettingsState extends State<Settings> {
               child: Text(
                 'Cancel',
                 style: TextStyle(
-                  color: _isDarkMode ? Colors.white70 : Colors.grey,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface.withOpacity(0.7)
+                      : AppTheme.lightOnSurface.withOpacity(0.7),
                   fontFamily: 'Poppins',
                 ),
               ),
             ),
             TextButton(
               onPressed: () {
-                // Implement account deletion here
                 Navigator.of(context).pop();
-                // Navigate to login screen after deletion
-                Get.offAllNamed('/login'); // Make sure you have this route defined
+                Get.offAllNamed('/login');
               },
               child: Text(
                 'Delete Account',
                 style: TextStyle(
-                  color: Colors.red,
+                  color: AppTheme.darkError,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Poppins',
                 ),
@@ -234,8 +246,8 @@ class _SettingsState extends State<Settings> {
             ),
             TextButton(
               onPressed: () {
-                // Implement share functionality here
-                // You'll need to add the share package to your pubspec.yaml
+                // Share the app using share_plus package
+
                 Navigator.of(context).pop();
               },
               child: Text(
@@ -252,14 +264,591 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  // ADDED: About App dialog implementation
+  void _showAboutAppDialog(BuildContext context) async {
+    // Get app version information
+    final packageInfo = await PackageInfo.fromPlatform();
+    final String version = packageInfo.version;
+    final String buildNumber = packageInfo.buildNumber;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+          title: Text(
+            'About GlycoSnap',
+            style: TextStyle(
+              color: _isDarkMode ? Colors.white : Colors.black,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Image.asset(
+                      'assets/images/app_logo.png',
+                      height: 80,
+                      width: 80,
+                    ),
+                  ),
+                ),
+                Text(
+                  'GlycoSnap',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Version: $version (Build $buildNumber)',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white70 : Colors.black54,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'GlycoSnap helps you track your glycemic intake through easy food scanning and smart nutrition tracking.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '© 2025 GlycoSnap Team\nAll rights reserved.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white70 : Colors.black54,
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  color: _isDarkMode ? Colors.lightBlueAccent : Colors.blue,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ADDED: Show Privacy Policy dialog
+  void _showPrivacyPolicyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+          title: Text(
+            'Privacy Policy',
+            style: TextStyle(
+              color: _isDarkMode ? Colors.white : Colors.black,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Last Updated: March 2024',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white70 : Colors.black54,
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'At GlycoSnap, your privacy is a priority. This Privacy Policy explains how we collect, use, store, and protect your personal data when you use our services.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '1. Information We Collect',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'a. Personal Information\nWe may collect personal information such as:\n\n• Name, email address, and account credentials\n• Age, gender, and health-related preferences (optional)\n• Device identifiers and IP address',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'b. Health & Nutrition Data\n\n• Photos of meals for food recognition\n• Estimated glycemic load, portion size, calorie content, and nutritional insights\n• Feedback and input you provide regarding food habits',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'c. Device & App Usage Data\n\n• App interactions, session durations, and crash reports\n• Camera EXIF metadata (e.g., focal length, aperture) for depth estimation (only used locally or anonymized on backend)',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '2. How We Use Your Information',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'We use your data to:\n\n• Detect and classify foods using AI models (YOLOv8, MiDaS)\n• Estimate portion size and glycemic load\n• Provide personalized nutritional feedback\n• Improve AI accuracy and enhance app performance\n• Conduct research and product development (in anonymized form)',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '3. How We Share Your Data',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'We do not sell your personal data. We may share data:\n\n• With third-party services (e.g., Firebase) for authentication and storage\n• With analytics providers (e.g., Google Analytics for Firebase) in aggregated form\n• When required by law or to protect user safety and legal rights',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '4. Data Storage and Security',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '• Your data is encrypted during transmission (HTTPS) and at rest.\n• Photos are processed using secure servers; minimal image data is stored.\n• Authentication is managed via secure Firebase Authentication.\n• Access to backend services is restricted via role-based access control.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '5. Your Rights and Choices',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'You can:\n\n• Access, update, or delete your account data\n• Request a copy of your stored information\n• Withdraw consent at any time\n• Opt out of analytics (via settings)\n\nTo exercise any of these rights, contact us at: privacy@glycosnap.ai',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '6. Children\'s Privacy',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'GlycoSnap is not intended for use by individuals under the age of 13. We do not knowingly collect personal data from children without parental consent.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '7. Data Retention',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'We retain personal data only as long as necessary to:\n\n• Fulfill the purposes outlined in this policy\n• Comply with legal obligations\n• Improve app performance and user experience\n\nYou may request deletion of your data at any time.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '8. Changes to This Policy',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'We may update this Privacy Policy occasionally. Changes will be reflected by the "Last Updated" date and notified via the app.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '9. Contact Us',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'If you have any questions or concerns about this Privacy Policy or your data, contact us at:\n\n📧 glycosnap@gmail.com\n🌍 glycosnap.jhubafrica.com/',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  color: _isDarkMode ? Colors.lightBlueAccent : Colors.blue,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // ADDED: Show Terms and Conditions dialog
+  void _showTermsAndConditionsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+          title: Text(
+            'Terms and Conditions',
+            style: TextStyle(
+              color: _isDarkMode ? Colors.white : Colors.black,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome to GlycoSnap. These Terms and Conditions ("Terms") govern your use of the GlycoSnap mobile application, website, and all related services (collectively, the "Service"). By using GlycoSnap, you agree to be bound by these Terms.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '1. Use of the Service',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'You agree to:\n\n• Use GlycoSnap only for lawful purposes\n• Provide accurate information during registration and app use\n• Not misuse, hack, reverse-engineer, or interfere with our systems\n• Be responsible for maintaining the confidentiality of your account',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '2. User Eligibility',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'GlycoSnap is intended for individuals who are 13 years or older. If you are under 18, you must have parental or guardian consent to use the app.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '3. Health Disclaimer',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'GlycoSnap provides informational and educational services related to food recognition, glycemic load estimation, and nutrition. It does not constitute medical advice. Always consult a qualified healthcare provider before making changes to your diet or health routines.\n\nWe are not liable for any decisions made based on app output.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '4. Intellectual Property',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'All content, algorithms, models, images, and branding in GlycoSnap are the property of GlycoSnap or its licensors and are protected by copyright, trademark, and other intellectual property laws.\n\nYou may not copy, distribute, or reverse-engineer any part of the app without explicit written permission.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '5. User-Generated Content',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'You retain ownership of any images or information you upload. By submitting data, you grant GlycoSnap a non-exclusive, royalty-free license to use it for:\n\n• Processing food recognition\n• Improving AI models\n• Academic research (in anonymized form)\n\nYou agree not to upload harmful, offensive, or illegal content.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '6. Account Termination',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'We reserve the right to suspend or terminate your account at any time if:\n\n• You violate these Terms\n• Your use poses a risk to the service or other users\n• We are required to do so by law or regulation\n\nYou may delete your account at any time via the app or by contacting us.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '7. Limitation of Liability',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'To the fullest extent permitted by law, GlycoSnap shall not be liable for:\n\n• Any indirect or incidental damages\n• Loss of data, profits, or health outcomes\n• Issues caused by third-party services (e.g., Firebase, camera API)',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '8. Modifications',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'We may update these Terms at any time. Continued use after updates means you accept the new Terms. Significant changes will be notified via email or in-app.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '9. Governing Law',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'These Terms shall be governed by and interpreted in accordance with the laws of the Republic of Kenya, without regard to its conflict of law provisions.',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '10. Contact Us',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'If you have questions or concerns regarding these Terms, please contact us at:\n\n📧 glycosnap@gmail.com\n🌍 glycosnap.jhubafrica.com/',
+                  style: TextStyle(
+                    color: _isDarkMode ? Colors.white : Colors.black,
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  color: _isDarkMode ? Colors.lightBlueAccent : Colors.blue,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Adjust the background based on dark mode using the specified color
-      backgroundColor: _isDarkMode ? _darkModeColor : const Color(0xffFDFFFF),
+      backgroundColor:
+          _isDarkMode ? AppTheme.darkSurface : AppTheme.lightSurface,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: _isDarkMode ? const Color(0xff333333) : const Color(0xffBEE1DD),
+        backgroundColor:
+            _isDarkMode ? AppTheme.darkSurface : AppTheme.lightSurface,
         toolbarHeight: 60,
         title: Container(
           child: Text(
@@ -268,7 +857,9 @@ class _SettingsState extends State<Settings> {
               fontFamily: 'OpenSauce',
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: _isDarkMode ? Colors.white : colorDark,
+              color: _isDarkMode
+                  ? AppTheme.darkOnSurface
+                  : AppTheme.lightOnSurface,
             ),
           ),
         ),
@@ -276,14 +867,14 @@ class _SettingsState extends State<Settings> {
       ),
       body: SettingsList(
         lightTheme: SettingsThemeData(
-          settingsListBackground: const Color(0xffFDFFFF),
-          settingsSectionBackground: Colors.white,
-          tileDescriptionTextColor: Colors.black54,
+          settingsListBackground: AppTheme.lightSurface,
+          settingsSectionBackground: AppTheme.lightSurface,
+          tileDescriptionTextColor: AppTheme.lightOnSurface.withOpacity(0.7),
         ),
         darkTheme: SettingsThemeData(
-          settingsListBackground: _darkModeColor,
-          settingsSectionBackground: _darkModeColor.withOpacity(0.9),
-          tileDescriptionTextColor: Colors.white70,
+          settingsListBackground: AppTheme.darkSurface,
+          settingsSectionBackground: AppTheme.darkSurface.withOpacity(0.9),
+          tileDescriptionTextColor: AppTheme.darkOnSurface.withOpacity(0.7),
         ),
         sections: [
           SettingsSection(
@@ -293,11 +884,12 @@ class _SettingsState extends State<Settings> {
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 14,
-                color: _isDarkMode ? Colors.white70 : colorDark,
+                color: _isDarkMode
+                    ? AppTheme.darkOnSurface.withOpacity(0.7)
+                    : AppTheme.lightOnSurface.withOpacity(0.7),
               ),
             ),
             tiles: [
-
               // Dark Mode Toggle
               SettingsTile.switchTile(
                 onToggle: (value) {
@@ -306,14 +898,18 @@ class _SettingsState extends State<Settings> {
                 initialValue: _isDarkMode,
                 leading: Icon(
                   Icons.dark_mode,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 title: Text(
                   'Dark mode',
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 description: Text(
@@ -321,7 +917,9 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 12,
-                    color: _isDarkMode ? Colors.white70 : Colors.black54,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface.withOpacity(0.7)
+                        : AppTheme.lightOnSurface.withOpacity(0.7),
                   ),
                 ),
               ),
@@ -334,14 +932,18 @@ class _SettingsState extends State<Settings> {
                 initialValue: _useGrams,
                 leading: Icon(
                   Icons.scale,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 title: Text(
                   'Use grams',
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 description: Text(
@@ -349,7 +951,9 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 12,
-                    color: _isDarkMode ? Colors.white70 : Colors.black54,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface.withOpacity(0.7)
+                        : AppTheme.lightOnSurface.withOpacity(0.7),
                   ),
                 ),
               ),
@@ -361,12 +965,16 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.key,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
                   _showFeatureDialog(context, 'Change Password');
@@ -380,12 +988,16 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.notifications_active_rounded,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
                   _showFeatureDialog(context, 'Notifications');
@@ -393,7 +1005,6 @@ class _SettingsState extends State<Settings> {
               ),
             ],
           ),
-
           SettingsSection(
             margin: const EdgeInsetsDirectional.all(5),
             title: Text(
@@ -401,7 +1012,9 @@ class _SettingsState extends State<Settings> {
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 14,
-                color: _isDarkMode ? Colors.white70 : colorDark,
+                color: _isDarkMode
+                    ? AppTheme.darkOnSurface.withOpacity(0.7)
+                    : AppTheme.lightOnSurface.withOpacity(0.7),
               ),
             ),
             tiles: [
@@ -411,12 +1024,16 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.account_circle,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
                   Get.toNamed('/account');
@@ -428,12 +1045,16 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.library_books,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
                   _showFeatureDialog(context, 'Dietary history');
@@ -445,12 +1066,14 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.delete,
-                  color: Colors.red,
+                  color: AppTheme.darkError,
                 ),
                 onPressed: (BuildContext context) {
                   _showDeleteAccountDialog(context);
@@ -462,12 +1085,16 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.logout,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
                   _showLogoutDialog(context);
@@ -482,7 +1109,9 @@ class _SettingsState extends State<Settings> {
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 14,
-                color: _isDarkMode ? Colors.white70 : colorDark,
+                color: _isDarkMode
+                    ? AppTheme.darkOnSurface.withOpacity(0.7)
+                    : AppTheme.lightOnSurface.withOpacity(0.7),
               ),
             ),
             tiles: [
@@ -492,15 +1121,20 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.phone_android,
-                  color: _isDarkMode ? Colors.white : Colors.black,
-    ),
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
+                ),
                 onPressed: (BuildContext context) {
-                  _showFeatureDialog(context, 'About App');
+                  // UPDATED: Call new about app dialog method instead of feature dialog
+                  _showAboutAppDialog(context);
                 },
               ),
               SettingsTile(
@@ -509,15 +1143,19 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.file_copy,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  _showFeatureDialog(context, 'Terms & Conditions');
+                  _showTermsAndConditionsDialog(context);
                 },
               ),
               SettingsTile(
@@ -526,15 +1164,19 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.verified_user,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  _showFeatureDialog(context, 'Privacy Policy');
+                  _showPrivacyPolicyDialog(context);
                 },
               ),
               SettingsTile(
@@ -543,15 +1185,19 @@ class _SettingsState extends State<Settings> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 16,
-                    color: _isDarkMode ? Colors.white : Colors.black,
+                    color: _isDarkMode
+                        ? AppTheme.darkOnSurface
+                        : AppTheme.lightOnSurface,
                   ),
                 ),
                 leading: Icon(
                   Icons.share,
-                  color: _isDarkMode ? Colors.white : Colors.black,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  _showShareDialog(context);
+                  _showFeatureDialog(context, 'Share App');
                 },
               ),
             ],
