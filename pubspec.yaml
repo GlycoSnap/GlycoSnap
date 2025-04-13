@@ -104,6 +104,9 @@ flutter:
     - images/lunch.jpeg
     - images/supper.jpeg
     - images/onigiri.png
+    - images/bot1.png
+    - images/bot2.png
+    - images/bot3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

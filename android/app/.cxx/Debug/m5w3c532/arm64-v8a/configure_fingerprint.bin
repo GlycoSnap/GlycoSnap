@@ -2,6 +2,7 @@ C/C++ Structured Log[
 Y
 WC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\additional_project_files.txtC
 A
+<<<<<<< Updated upstream
 ?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	Éªñã2 ¸ªö¯×2X
 V
 TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build.json	Éªñã2 Èªö¯×2]
@@ -26,3 +27,29 @@ T
 RC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\symbol_folder_index.txt	Éªñã2I ä¬ö¯×2S
 Q
 OC:\flutter\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	Éªñã2§ ù¥ÒÐ2
+=======
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	ËÝ§á2 ¸ªö¯×2X
+V
+TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build.json	ËÝ§á2 Èªö¯×2]
+[
+YC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build_mini.json	ÌÝ§á2ê ««ö¯×2J
+H
+FC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja	ÌÝ§á2†Ò ê¡ö¯×2N
+L
+JC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja.txt	ÌÝ§á2S
+Q
+OC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build_file_index.txt	ÌÝ§á2O æ¬ö¯×2T
+R
+PC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json	ÌÝ§á2X
+V
+TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json.bin	ÌÝ§á2	^
+\
+ZC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\metadata_generation_command.txt	ÌÝ§á2
+“ È¬ö¯×2Q
+O
+MC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\prefab_config.json	ÍÝ§á2( ß¬ö¯×2V
+T
+RC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\symbol_folder_index.txt	ÍÝ§á2I ä¬ö¯×2S
+Q
+OC:\flutter\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	ÍÝ§á2§ ù¥ÒÐ2
+>>>>>>> Stashed changes
