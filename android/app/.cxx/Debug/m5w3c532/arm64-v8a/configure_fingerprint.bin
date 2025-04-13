@@ -2,54 +2,27 @@ C/C++ Structured Log[
 Y
 WC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\additional_project_files.txtC
 A
-<<<<<<< Updated upstream
-?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	Éªñã2 ¸ªö¯×2X
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	ŞÉƒã2 øÈƒã2X
 V
-TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build.json	Éªñã2 Èªö¯×2]
+TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build.json	ŞÉƒã2 ˆÉƒã2]
 [
-YC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build_mini.json	Éªñã2ê ««ö¯×2J
+YC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build_mini.json	ŞÉƒã2ê ÏÉƒã2J
 H
-FC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja	Éªñã2†Ò ê¡ö¯×2N
+FC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja	ŞÉƒã2†Ò ò½ƒã2N
 L
-JC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja.txt	Éªñã2S
+JC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja.txt	ŞÉƒã2S
 Q
-OC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build_file_index.txt	Éªñã2O æ¬ö¯×2T
+OC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build_file_index.txt	ŞÉƒã2O ÖÉƒã2T
 R
-PC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json	Éªñã2X
+PC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json	ŞÉƒã2X
 V
-TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json.bin	Éªñã2	^
+TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json.bin	ŞÉƒã2	^
 \
-ZC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\metadata_generation_command.txt	Éªñã2
-“ È¬ö¯×2Q
+ZC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\metadata_generation_command.txt	ŞÉƒã2
+“ ÒÉƒã2Q
 O
-MC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\prefab_config.json	Éªñã2( ß¬ö¯×2V
+MC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\prefab_config.json	ŞÉƒã2( ÔÉƒã2V
 T
-RC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\symbol_folder_index.txt	Éªñã2I ä¬ö¯×2S
+RC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\symbol_folder_index.txt	ßÉƒã2I ÔÉƒã2S
 Q
-OC:\flutter\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	Éªñã2§ ù¥ÒĞ2
-=======
-?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	Ëİ§á2 ¸ªö¯×2X
-V
-TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build.json	Ëİ§á2 Èªö¯×2]
-[
-YC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\android_gradle_build_mini.json	Ìİ§á2ê ««ö¯×2J
-H
-FC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja	Ìİ§á2†Ò ê¡ö¯×2N
-L
-JC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build.ninja.txt	Ìİ§á2S
-Q
-OC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\build_file_index.txt	Ìİ§á2O æ¬ö¯×2T
-R
-PC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json	Ìİ§á2X
-V
-TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\compile_commands.json.bin	Ìİ§á2	^
-\
-ZC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\metadata_generation_command.txt	Ìİ§á2
-“ È¬ö¯×2Q
-O
-MC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\prefab_config.json	Íİ§á2( ß¬ö¯×2V
-T
-RC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\arm64-v8a\symbol_folder_index.txt	Íİ§á2I ä¬ö¯×2S
-Q
-OC:\flutter\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	Íİ§á2§ ù¥ÒĞ2
->>>>>>> Stashed changes
+OC:\flutter\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	ßÉƒã2§ ù¥ÒĞ2

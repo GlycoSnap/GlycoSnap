@@ -1,2 +1,0 @@
-C:/GlycoSnap/new/android/app/.cxx/RelWithDebInfo/1l386d2w/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/GlycoSnap/new/android/app/.cxx/RelWithDebInfo/1l386d2w/armeabi-v7a/CMakeFiles/rebuild_cache.dir
