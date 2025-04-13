@@ -22,7 +22,7 @@ class _AddFoodState extends State<AddFood> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
   final String baseUrl =
-      'http://192.168.0.101:5000/predict'; //Replace with your Flask server URL
+      'http://10.5.20.4:5000/predict'; //Replace with your Flask server URL
 //run ipconfig in cmd or powershell and find the ipv4 address under Wi-Fi
 
   Future<Map<String, dynamic>>? _glycemicLoadFuture;

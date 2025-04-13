@@ -38,11 +38,72 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: lightBackground,
-        toolbarHeight: size.height * 0.1, // 10% of screen height
-        title: SizedBox(
-          width: size.width * 0.4, // 40% of screen width
-          child: Image.asset('images/logo.png'),
+        toolbarHeight: size.height * 0.11, // 10% of screen height
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Hello, ',
+                        style: TextStyle(
+                          fontFamily: 'OpenSauce',
+                          fontSize: size.width * 0.055, // Scaled font size
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Nanami!',
+                        style: TextStyle(
+                          fontFamily: 'OpenSauce',
+                          fontSize: size.width * 0.055, // Scaled font size
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: size.width * 0.015), // 1.5% of screen width
+                Text(
+                  '👋',
+                  style: TextStyle(
+                      fontSize: size.width * 0.04), // Scaled emoji size
+                ),
+              ],
+            ),
+            
+                SizedBox(height: size.height * 0.008),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: dayName,
+                    style: TextStyle(
+                      fontFamily: 'OpenSauce',
+                      fontSize: size.width * 0.035,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ', $dayNumber',
+                    style: TextStyle(
+                      fontFamily: 'OpenSauce',
+                      fontSize: size.width * 0.035, // Scaled font size
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+
         actions: [
           Padding(
             padding:
@@ -53,7 +114,7 @@ class _HomePageState extends State<HomePage> {
               },
               icon: Icon(
                 Icons.notifications,
-                size: size.width * 0.08, // Scaled icon size
+                size: size.width * 0.07, // Scaled icon size
                 color: colorDark,
               ),
             ),
@@ -69,66 +130,8 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Date display
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: dayName,
-                        style: TextStyle(
-                          fontFamily: 'OpenSauce',
-                          fontSize: size.width * 0.045, // Scaled font size
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: ', $dayNumber',
-                        style: TextStyle(
-                          fontFamily: 'OpenSauce',
-                          fontSize: size.width * 0.045, // Scaled font size
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: size.height * 0.015), // 1.5% of screen height
 
                 // Welcome message
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Welcome back, ',
-                            style: TextStyle(
-                              fontFamily: 'OpenSauce',
-                              fontSize: size.width * 0.045, // Scaled font size
-                              color: Colors.black,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'Nanami!',
-                            style: TextStyle(
-                              fontFamily: 'OpenSauce',
-                              fontSize: size.width * 0.045, // Scaled font size
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: size.width * 0.015), // 1.5% of screen width
-                    Text(
-                      '😊',
-                      style: TextStyle(
-                          fontSize: size.width * 0.06), // Scaled emoji size
-                    ),
-                  ],
-                ),
 
                 // Progress circle
                 Padding(
@@ -136,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                       top: size.height * 0.02), // 2% of screen height
                   child: Container(
                     width: size.width * 0.9, // 90% of screen width
-                    height: size.height * 0.25, // 25% of screen height
+                    height: size.height * 0.19, // 25% of screen height
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: const Color.fromARGB(255, 205, 233, 230),
@@ -156,8 +159,8 @@ class _HomePageState extends State<HomePage> {
                     child: Stack(
                       children: [
                         Positioned(
-                          top: size.height * 0.02, // 2% of screen height
-                          left: size.width * 0.02, // 2% of screen width
+                          top: size.height * 0.01, // 2% of screen height
+                          left: size.width * 0.01, // 2% of screen width
                           child: CircularPercentIndicator(
                             animation: true,
                             animationDuration: 3000,
@@ -173,8 +176,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Positioned(
-                          top: size.height * 0.06, // 6% of screen height
-                          left: size.width * 0.08, // 8% of screen width
+                          top: size.height * 0.04, // 6% of screen height
+                          left: size.width * 0.07, // 8% of screen width
                           child: CircularPercentIndicator(
                             animation: true,
                             animationDuration: 3000,
@@ -188,8 +191,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Positioned(
-                          top: size.height * 0.08, // 8% of screen height
-                          left: size.width * 0.14, // 14% of screen width
+                          top: size.height * 0.067, // 8% of screen height
+                          left: size.width * 0.135, // 14% of screen width
                           child: Image.asset(
                             'images/onigiri.png',
                             width: size.width * 0.12, // Scaled image size
@@ -659,9 +662,40 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: size.height * 0.03), // Bottom padding
+               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: size.width * 0.3, // smaller circular size
+                      height: size.width * 0.3,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.cyanAccent.withOpacity(0.7),
+                            blurRadius: 20,
+                            spreadRadius: 4,
+                          ),
+                        ],
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          'images/bot1.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
+
+            SizedBox(
+                height: size.height * 0.03), // Bottom padding            ),
           ],
         ),
       ),

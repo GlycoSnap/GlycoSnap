@@ -10,6 +10,15 @@ import ultralytics.nn.tasks
 import torch
 import torch.serialization
 from calories import get_calories
+import tempfile
+import os
+from inference_sdk import InferenceHTTPClient
+
+
+rf_client = InferenceHTTPClient(
+    api_url="https://detect.roboflow.com",
+    api_key="5107l8sgQ6y11V5Z7bRl"
+)
 
 # Create Flask application instance
 app = Flask(__name__)
@@ -93,67 +102,70 @@ FOOD_DENSITY = {
 }
 
 @app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST'])
 def predict_glycemic_load():
     try:
         data = request.json
         if not data or 'image' not in data:
             return jsonify({"error": "No image provided"}), 400
 
+        # 1️⃣ Decode the incoming base64 image
         image = decode_image(data['image'])
         if image is None:
             return jsonify({"error": "Invalid image format"}), 400
 
-        # Perform object segmentation
-        results = app.yolo_model.predict(image, imgsz=320, conf=0.5, task="segment")
+        # 2️⃣ Write to a temp file for Roboflow SDK
+        tmp = tempfile.NamedTemporaryFile(suffix='.jpg', delete=False)
+        cv2.imwrite(tmp.name, image)
+        tmp.close()
 
+        # 3️⃣ Call Roboflow workflow instead of YOLO.predict()
+        rf_result = rf_client.run_workflow(
+            workspace_name="glycosnapv2",
+            workflow_id="custom-workflow-2",
+            images={"image": tmp.name},
+            use_cache=True
+        )
+
+        # clean up the temp file
+        os.unlink(tmp.name)
+
+        # 4️⃣ Parse predictions (same area→GL logic as before)
         response = {'glycemic_load': {}, 'total_glycemic_load': 0.0}
-        segmented_areas = {}  # Store food areas
+        segmented_areas = {}
+        for pred in rf_result.get("predictions", []):
+            class_name = pred["class"]               # e.g. "rice", "beans"
+            mask_pts    = pred["mask"]               # polygon pts [[x,y],…]
+            area_pixels = cv2.contourArea(np.array(mask_pts))
+            area_cm2    = area_pixels * 0.001        # your scaling factor
+            segmented_areas[class_name] = segmented_areas.get(class_name, 0) + area_cm2
 
-        for r in results:
-            for mask, box in zip(r.masks.xy, r.boxes):
-                class_name = r.names[int(box.cls)]
-                if class_name in FOOD_DATA:
-                    # Calculate segmented area
-                    area_pixels = cv2.contourArea(np.array(mask))
-                    
-                    # Convert to cm² (Adjust scaling factor if needed)
-                    pixel_to_cm2 = 0.001
-                    area_cm2 = area_pixels * pixel_to_cm2  
-                    
-                    segmented_areas[class_name] = segmented_areas.get(class_name, 0) + area_cm2
-
-        # Glycemic Load Calculation
-        for food_item, area_cm2 in segmented_areas.items():
-            food_info = FOOD_DATA[food_item]
-            gi = food_info["gi"]
-            carb_density = food_info["carbs_per_100g"] / 100  # Convert per 100g to per gram
-
-            # Compute carbohydrates in grams
-            carbs_g = area_cm2 * carb_density
-
-            # Compute Glycemic Load (GL)
-            gl = (gi * carbs_g) / 100 if gi > 0 else 0
-
-            # Cap extreme values if needed
-            gl = min(gl, 100)
-            response['glycemic_load'][food_item] = gl
+        # 5️⃣ Compute GL per food item
+        for food, area in segmented_areas.items():
+            info     = FOOD_DATA[food]
+            gi       = info["gi"]
+            carbs_g  = area * (info["carbs_per_100g"] / 100)
+            gl       = (gi * carbs_g) / 100 if gi > 0 else 0
+            gl       = min(gl, 100)
+            response['glycemic_load'][food] = gl
             response['total_glycemic_load'] += gl
 
-        # Assign Glycemic Load Category
-        total_gl = response['total_glycemic_load']
-        if total_gl <= 10:
+        # 6️⃣ Assign category & return
+        total = response['total_glycemic_load']
+        if total <= 10:
             response['glycemic_load_category'] = "Low glycemic load"
-        elif total_gl <= 20:
+        elif total <= 20:
             response['glycemic_load_category'] = "Medium glycemic load"
         else:
             response['glycemic_load_category'] = "High glycemic load"
-
         response['food_name'] = ", ".join(response['glycemic_load'].keys())
+
         return jsonify(response)
 
     except Exception as e:
         app.logger.error(f"Prediction failed: {str(e)}")
         return jsonify({"error": "Prediction failed"}), 500
+
 
 @app.route('/calories', methods=['POST'])
 def get_food_calories():

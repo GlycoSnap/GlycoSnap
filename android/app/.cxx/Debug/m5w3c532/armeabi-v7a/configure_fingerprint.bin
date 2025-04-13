@@ -2,6 +2,7 @@ C/C++ Structured Log]
 [
 YC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\additional_project_files.txtC
 A
+<<<<<<< Updated upstream
 ?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	§«ñã2 ”€°×2Z
 X
 VC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\android_gradle_build.json	§«ñã2‘ Œ”€°×2_
@@ -26,3 +27,29 @@ V
 TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\symbol_folder_index.txt	§«ñã2K ”€°×2S
 Q
 OC:\flutter\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	§«ñã2§ ù¥ÒÐ2
+=======
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	”Þ§á2 ”€°×2Z
+X
+VC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\android_gradle_build.json	”Þ§á2‘ Œ”€°×2_
+]
+[C:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\android_gradle_build_mini.json	”Þ§á2î —”€°×2L
+J
+HC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\build.ninja	”Þ§á2Ò Ç’€°×2P
+N
+LC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\build.ninja.txt	”Þ§á2U
+S
+QC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\build_file_index.txt	”Þ§á2O ¢”€°×2V
+T
+RC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\compile_commands.json	”Þ§á2Z
+X
+VC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\compile_commands.json.bin	•Þ§á2	`
+^
+\C:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\metadata_generation_command.txt	•Þ§á2
+ ›”€°×2S
+Q
+OC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\prefab_config.json	•Þ§á2( œ”€°×2X
+V
+TC:\GlycoSnap\new\android\app\.cxx\Debug\m5w3c532\armeabi-v7a\symbol_folder_index.txt	•Þ§á2K ”€°×2S
+Q
+OC:\flutter\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	•Þ§á2§ ù¥ÒÐ2
+>>>>>>> Stashed changes
