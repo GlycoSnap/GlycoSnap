@@ -1,0 +1,118 @@
+import sys
+import json
+import numpy as np
+import cv2
+import base64
+import os
+from flask import Flask, request, jsonify
+from ultralytics import YOLO
+import ultralytics.nn.tasks
+import torch
+import torch.serialization
+from calories import get_calories
+import tempfile
+import os
+from inference_sdk import InferenceHTTPClient
+
+
+rf_client = InferenceHTTPClient(
+    api_url="https://detect.roboflow.com",
+    api_key="5107l8sgQ6y11V5Z7bRl"
+)
+
+# Create Flask application instance
+app = Flask(__name__)
+
+FOOD_DATA = {
+    "beef": {"gi": 0, "carbs_per_100g": 0},       # No carbs in beef
+    "kales": {"gi": 15, "carbs_per_100g": 8},       # Kale has ~8g of carbs per 100g
+    "ugali": {"gi": 66, "carbs_per_100g": 78},       # Ugali has ~78g carbs per 100g
+    "rice": {"gi": 73, "carbs_per_100g": 28},        # White rice values
+    "chapati": {"gi": 52, "carbs_per_100g": 50},      # Whole wheat chapati
+    "beans": {"gi": 28, "carbs_per_100g": 20},        # Cooked kidney beans
+    "cabbage": {"gi": 10, "carbs_per_100g": 6},       # Cooked cabbage
+    "spinach": {"gi": 15, "carbs_per_100g": 3.6},     # Spinach (low carb)
+    "ndengu": {"gi": 25, "carbs_per_100g": 16}        # Mung beans (green grams)
+}
+
+def get_model_path():
+    if os.getenv('DOCKER_ENV') == 'true':
+        return '/app/model/glycosnap_model.pt'  # Docker path
+    else:
+        return os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                            'model', 'glycosnap_model.pt')
+
+# Initialize app and load model from local storage
+def initialize_app():
+    try:
+        # Ensure model directory exists
+        model_path = get_model_path()
+        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+
+        # Check if model file exists locally; if not, throw an error.
+        if not os.path.exists(model_path):
+            raise FileNotFoundError("Model file not found. Please place glycosnap_model.pt in the 'model' folder.")
+
+        # Register the actual class, NOT a string
+        torch.serialization.add_safe_globals([ultralytics.nn.tasks.SegmentationModel])
+
+        # Load YOLO model using the local file path
+        app.yolo_model = YOLO(model_path)
+        app.logger.info("Model loaded successfully")
+
+    except Exception as e:
+        app.logger.error(f"Initialization failed: {str(e)}")
+        sys.exit(1)
+
+@app.route('/')
+def home():
+    return jsonify({"message": "GlycoSnap API is running!"})
+
+# Run initialization before first request
+@app.before_request
+def before_first_request():
+    if not hasattr(app, 'yolo_model'):
+        initialize_app()
+
+def decode_image(image_base64):
+    try:
+        image_data = base64.b64decode(image_base64)
+        np_arr = np.frombuffer(image_data, np.uint8)
+        return cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    except Exception as e:
+        app.logger.error(f"Image decoding failed: {str(e)}")
+        return None
+
+def calculate_glycemic_load(gi, carbs):
+    """
+    Calculate glycemic load (GL) using the formula:
+    GL = (GI * Carbs) / 100
+    """
+    return (gi * carbs) / 100
+
+FOOD_DENSITY = {
+    "rice": 1.3,   # g/cm³
+    "ugali": 1.5,
+    "kales": 0.2,
+    "spinach": 0.2,
+    "beans": 0.8,
+    "chapati": 0.9,
+    "cabbage": 0.3,
+    "ndengu": 0.9
+}
+
+@app.route('/predict', methods=['POST'])
+
+
+@app.route('/calories', methods=['POST'])
+def get_food_calories():
+    data = request.json
+    if not data or "food_name" not in data:
+        return jsonify({"error": "No food name provided"}), 400
+    
+    result = get_calories(data["food_name"])
+    return jsonify(result)
+
+if __name__ == "__main__":
+    initialize_app()
+    app.run(host="0.0.0.0", port=5000)
