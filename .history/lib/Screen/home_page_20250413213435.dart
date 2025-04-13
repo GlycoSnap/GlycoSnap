@@ -13,50 +13,15 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> {
   int visit = 0;
 
   double glycemicLoad = 0; // Fetch from storage
   double calories = 0; // Fetch from storage
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  bool _isTextVisible = false;
 
   double calculateTotalGlycemicLoad(List<Meal> meals) {
     return meals.fold(0.0, (sum, meal) => sum + meal.glycemicLoad);
   }
-  
-  @override
-  void initState() {
-    super.initState();
-    // Initialize AnimationController
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300), // Animation speed
-      vsync: this,
-    );
-    // Define animation: slide from 0 (hidden) to -100 (visible, to the left)
-    _animation = Tween<double>(begin: 0, end: 10).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _toggleTextBubble() {
-    setState(() {
-      _isTextVisible = !_isTextVisible;
-      if (_isTextVisible) {
-        _controller.forward(); // Slide out
-      } else {
-        _controller.reverse(); // Slide back
-      }
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -665,78 +630,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             Positioned(
               bottom: size.height * 0.02,
               right: size.width * 0.05,
-              child: Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  // Text bubble
-                  AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(_animation.value, 0),
-                        child: _isTextVisible
-                            ? Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: size.width * 0.04,
-                                  vertical: size.height * 0.015,
-                                ),
-                                margin: EdgeInsets.only(right: size.width * 0.35),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF023047),
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 5,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                ),
-                                child: Text(
-                                  'Hi! I\'m Snappie!',
-                                  style: TextStyle(
-                                    fontFamily: 'OpenSauce',
-                                    fontSize: size.width * 0.04,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color.fromARGB(255, 255, 255, 255),
-                                  ),
-                                ),
-                              )
-                            : const SizedBox.shrink(),
-                      );
-                    },
-                  ),
-                  // Button
-                  GestureDetector(
-                    onTap: _toggleTextBubble,
-                    child: Container(
-                      width: size.width * 0.3,
-                      height: size.width * 0.3,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF023047),
-                            blurRadius: 10,
-                            spreadRadius: 4,
-                          ),
-                        ],
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
+              child: GestureDetector(
+                onTap: () {
+                  // Add navigation or action, e.g., Get.toNamed('/chat');
+                  print('Floating button tapped');
+                },
+                child: Container(
+                  width: size.width * 0.3,
+                  height: size.width * 0.3,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.cyanAccent.withOpacity(0.7),
+                        blurRadius: 10,
+                        spreadRadius: 4,
                       ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'images/bot1.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                    ],
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 1,
                     ),
                   ),
-                ],
+                  child: ClipOval(
+                    child: Image.asset(
+                      'images/bot1.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
-         ), ],
+            ),
+          ],
         ),
       ),
     );

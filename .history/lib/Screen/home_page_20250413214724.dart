@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       vsync: this,
     );
     // Define animation: slide from 0 (hidden) to -100 (visible, to the left)
-    _animation = Tween<double>(begin: 0, end: 10).animate(
+    _animation = Tween<double>(begin: 0, end: -10).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
@@ -682,7 +682,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                 ),
                                 margin: EdgeInsets.only(right: size.width * 0.35),
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF023047),
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
@@ -697,8 +697,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                   style: TextStyle(
                                     fontFamily: 'OpenSauce',
                                     fontSize: size.width * 0.04,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color.fromARGB(255, 255, 255, 255),
+                                    color: Colors.black,
                                   ),
                                 ),
                               )

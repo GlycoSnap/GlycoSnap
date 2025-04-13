@@ -1,2 +1,0 @@
-C:/Users/USER/OneDrive/Desktop/Attachment/new/android/app/.cxx/RelWithDebInfo/6m6326k3/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/USER/OneDrive/Desktop/Attachment/new/android/app/.cxx/RelWithDebInfo/6m6326k3/armeabi-v7a/CMakeFiles/rebuild_cache.dir

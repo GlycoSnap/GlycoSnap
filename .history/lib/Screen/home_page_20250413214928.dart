@@ -697,8 +697,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                   style: TextStyle(
                                     fontFamily: 'OpenSauce',
                                     fontSize: size.width * 0.04,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color.fromARGB(255, 255, 255, 255),
+                                    color: Colors.black,
                                   ),
                                 ),
                               )
