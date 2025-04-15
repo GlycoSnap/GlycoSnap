@@ -1,0 +1,18 @@
+{
+    "beef": {"gi": 0, "carbs_per_100g": 0},
+    "kales": {"gi": 15, "carbs_per_100g": 8},
+    "ugali": {"gi": 66, "carbs_per_100g": 78},
+    "rice": {"gi": 73, "carbs_per_100g": 28},
+    "chapati": {"gi": 52, "carbs_per_100g": 50},
+    "beans": {"gi": 28, "carbs_per_100g": 20},
+    "cabbage": {"gi": 10, "carbs_per_100g": 6},
+    "spinach": {"gi": 15, "carbs_per_100g": 3.6},
+    "ndengu": {"gi": 25, "carbs_per_100g": 16},
+    "chicken": {"gi": 0, "carbs_per_100g": 0},
+    "potato": {"gi": 85, "carbs_per_100g": 17},
+    "pasta": {"gi": 42, "carbs_per_100g": 25},
+    "apple": {"gi": 39, "carbs_per_100g": 14},
+    "sukuma_wiki": {"gi": 15, "carbs_per_100g": 8},
+  "githeri": {"gi": 45, "carbs_per_100g": 25},
+  "mukimo": {"gi": 60, "carbs_per_100g": 30}
+  }
