@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glycosnap/Authenticate/web_view.dart';
-import 'package:glycosnap/Utils/colors.dart';
 import 'package:glycosnap/Authenticate/nyt_api.dart';
+import 'package:glycosnap/Authenticate/web_view.dart';
 import 'package:glycosnap/Authenticate/nyt_articles.dart';
 
 class Community extends StatefulWidget {
@@ -22,11 +21,11 @@ class _CommunityState extends State<Community> {
     super.initState();
     final nyTimesService = NYTimesService();
 
-    futureArticles = Future.wait([
+    futureArticles = Future.wait<List<Article>>([
       nyTimesService.fetchDiabetesArticles(),
       nyTimesService.fetchDietArticles(),
       nyTimesService.fetchBloodSugarArticles(),
-    ]).then((results) {
+    ]).then((List<List<Article>> results) {
       // Flatten the list of lists into a single list
       return results.expand((articles) => articles).toList();
     });
