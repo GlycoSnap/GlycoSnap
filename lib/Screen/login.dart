@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
       body: Center(
         child: Container(
           decoration: BoxDecoration(
-            color: backgroundColor2,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(15),
           ),
           width: size.width * 0.85,
@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
                   fontFamily: 'OpenSauce',
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
-                  color: colorDark,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: size.height * 0.04),
@@ -104,7 +104,7 @@ class _LoginState extends State<Login> {
                   children: [
                     _buildTextField(
                         emailController, "Email", Icons.email, false),
-                    SizedBox(height: size.height * 0.05), // Adjusted spacing
+                    SizedBox(height: size.height * 0.05),
                     _buildTextField(
                         passwordController, "Password", Icons.lock, true),
                   ],
@@ -120,14 +120,14 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: black,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
               ),
               SizedBox(height: size.height * 0.04),
               PrettyWaveButton(
-                backgroundColor: colorLight,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 horizontalPadding: 120,
                 onPressed: () {
                   if (!_isLoading) {
@@ -135,13 +135,14 @@ class _LoginState extends State<Login> {
                   }
                 },
                 child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
+                    ? CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onPrimary)
+                    : Text(
                         'Login',
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
               ),
@@ -156,7 +157,10 @@ class _LoginState extends State<Login> {
                       TextSpan(
                         text: "Not a member? ",
                         style: TextStyle(
-                          color: colorDark,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.7),
                           fontWeight: FontWeight.w300,
                           fontSize: 16,
                         ),
@@ -165,7 +169,7 @@ class _LoginState extends State<Login> {
                         text: "Register now",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: colorLight,
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 16,
                         ),
                       ),
@@ -192,20 +196,31 @@ class _LoginState extends State<Login> {
       keyboardType: isPassword
           ? TextInputType.visiblePassword
           : TextInputType.emailAddress,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true,
-        fillColor: white,
+        fillColor: Theme.of(context).colorScheme.surface,
         labelText: label,
+        labelStyle: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+        ),
         suffixIcon: isPassword
             ? IconButton(
-                icon: Icon(_isPasswordVisible
-                    ? Icons.visibility
-                    : Icons.visibility_off),
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
                 onPressed: () =>
                     setState(() => _isPasswordVisible = !_isPasswordVisible),
               )
-            : Icon(icon, color: Colors.black26),
+            : Icon(
+                icon,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              ),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -232,16 +247,19 @@ class _LoginState extends State<Login> {
             Container(
               height: 3,
               width: size.width * 0.17,
-              color: Colors.black12,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
             ),
-            const Text(
+            Text(
               "  Or continue with  ",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              ),
             ),
             Container(
               height: 3,
               width: size.width * 0.17,
-              color: Colors.black12,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
             ),
           ],
         ),
@@ -262,7 +280,10 @@ class _LoginState extends State<Login> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white, width: 2),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
+          width: 2,
+        ),
       ),
       child: Image.asset(image, height: 35),
     );

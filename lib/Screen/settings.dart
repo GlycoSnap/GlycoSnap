@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:glycosnap/Utils/colors.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -293,7 +292,7 @@ class _SettingsState extends State<Settings> {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: Image.asset(
-                      'assets/images/app_logo.png',
+                      'images/logo.png',
                       height: 80,
                       width: 80,
                     ),

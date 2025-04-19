@@ -112,14 +112,14 @@ class ThemeController extends GetxController {
           onError: _isDarkMode.value
               ? AppTheme.darkOnSurface
               : AppTheme.lightOnSurface,
-          background:
-              _isDarkMode.value ? AppTheme.darkSurface : AppTheme.lightSurface,
-          onBackground: _isDarkMode.value
-              ? AppTheme.darkOnSurface
-              : AppTheme.lightOnSurface,
           surface:
               _isDarkMode.value ? AppTheme.darkSurface : AppTheme.lightSurface,
           onSurface: _isDarkMode.value
+              ? AppTheme.darkOnSurface
+              : AppTheme.lightOnSurface,
+          background:
+              _isDarkMode.value ? AppTheme.darkSurface : AppTheme.lightSurface,
+          onBackground: _isDarkMode.value
               ? AppTheme.darkOnSurface
               : AppTheme.lightOnSurface,
         ),

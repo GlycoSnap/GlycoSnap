@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:glycosnap/Utils/colors.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class SalesData {
   final String day;
