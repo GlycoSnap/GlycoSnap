@@ -10,9 +10,13 @@ import ultralytics.nn.tasks
 import torch
 import torch.serialization
 from calories import get_calories
+import tempfile
 
 # Create Flask application instance
 app = Flask(__name__)
+
+# Version check
+app.logger.info("Starting GlycoSnap API, app.py version: 2025-04-16-fix")
 
 FOOD_DATA = {
     "beef": {"gi": 0, "carbs_per_100g": 0},       # No carbs in beef
@@ -26,12 +30,14 @@ FOOD_DATA = {
     "ndengu": {"gi": 25, "carbs_per_100g": 16}        # Mung beans (green grams)
 }
 
+FALLBACK_FOOD = {"gi": 50, "carbs_per_100g": 20}
+
 def get_model_path():
     if os.getenv('DOCKER_ENV') == 'true':
-        return '/app/model/glycosnap_model.pt'  # Docker path
+        return '/app/model/glycosnapv2.pt'  # Updated model path
     else:
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), 
-                            'model', 'glycosnap_model.pt')
+                            'model', 'glycosnapv2.pt')  # Updated model path
 
 # Initialize app and load model from local storage
 def initialize_app():
@@ -42,7 +48,7 @@ def initialize_app():
 
         # Check if model file exists locally; if not, throw an error.
         if not os.path.exists(model_path):
-            raise FileNotFoundError("Model file not found. Please place glycosnap_model.pt in the 'model' folder.")
+            raise FileNotFoundError("Model file not found. Please place glycosnapv2.pt in the 'model' folder.")
 
         # Register the actual class, NOT a string
         torch.serialization.add_safe_globals([ultralytics.nn.tasks.SegmentationModel])
@@ -89,7 +95,12 @@ FOOD_DENSITY = {
     "beans": 0.8,
     "chapati": 0.9,
     "cabbage": 0.3,
-    "ndengu": 0.9
+    "ndengu": 0.9,
+    "sweet potatoes": 1.0,
+    "cassava": 1.2,
+    "arrowroots": 1.1,
+    "pilau": 1.2,
+    "mandazi": 0.8
 }
 
 @app.route('/predict', methods=['POST'])
@@ -97,10 +108,12 @@ def predict_glycemic_load():
     try:
         data = request.json
         if not data or 'image' not in data:
+            app.logger.error("No image provided in request")
             return jsonify({"error": "No image provided"}), 400
 
         image = decode_image(data['image'])
         if image is None:
+            app.logger.error("Invalid image format")
             return jsonify({"error": "Invalid image format"}), 400
 
         # Perform object segmentation
