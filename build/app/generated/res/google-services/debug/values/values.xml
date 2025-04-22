@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">1018153372345</string>
+    <string name="google_api_key" translatable="false">AIzaSyDeuWXoyFNncTY_EBq-GEqaaq8h-bIWJLc</string>
+    <string name="google_app_id" translatable="false">1:1018153372345:android:8343401213660fde35a968</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDeuWXoyFNncTY_EBq-GEqaaq8h-bIWJLc</string>
+    <string name="google_storage_bucket" translatable="false">glycosnap-c605c.firebasestorage.app</string>
+    <string name="project_id" translatable="false">glycosnap-c605c</string>
+</resources>

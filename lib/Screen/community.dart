@@ -69,8 +69,10 @@ class _CommunityState extends State<Community> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-                child: CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.primary));
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            );
           } else if (snapshot.hasError) {
             print('Error: ${snapshot.error.toString()}');
             return Center(child: Text('Error: ${snapshot.error.toString()}'));
@@ -93,7 +95,8 @@ class _CommunityState extends State<Community> {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text('No full article available.')),
+                          content: Text('No full article available.'),
+                        ),
                       );
                     }
                   },
@@ -102,14 +105,15 @@ class _CommunityState extends State<Community> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.1),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.1),
                     ),
                     padding: const EdgeInsets.only(right: 10),
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 0,
+                    ),
                     child: Stack(
                       children: [
                         Row(
@@ -140,9 +144,10 @@ class _CommunityState extends State<Community> {
                                       style: TextStyle(
                                         fontFamily: 'PoppinsBold',
                                         fontSize: 17,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                       ),
                                       maxLines: 2,
                                     ),
@@ -217,9 +222,7 @@ class _CommunityState extends State<Community> {
               controller.openView();
             },
             leading: const Icon(Icons.search),
-            backgroundColor: WidgetStateProperty.all<Color?>(
-              Colors.white,
-            ),
+            backgroundColor: WidgetStateProperty.all<Color?>(Colors.white),
           ),
         );
       },

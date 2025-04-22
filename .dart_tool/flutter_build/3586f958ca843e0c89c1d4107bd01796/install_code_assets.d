@@ -1,0 +1,1 @@
+ D:\\GlycoSnap\\.dart_tool\\flutter_build\\3586f958ca843e0c89c1d4107bd01796\\native_assets.json: 

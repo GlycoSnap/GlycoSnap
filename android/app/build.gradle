@@ -75,10 +75,10 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.google.firebase:firebase-auth:21.0.1'
-    implementation 'com.google.firebase:firebase-core:20.0.2'
-    implementation platform('com.google.firebase:firebase-bom:33.10.0')
-    implementation 'com.google.firebase:firebase-appcheck-playintegrity:16.0.1'
+    implementation platform('com.google.firebase:firebase-bom:32.7.2')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
 }
 
 tasks.withType(JavaCompile) {

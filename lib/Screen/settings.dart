@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart' show PackageInfo;
 import 'package:glycosnap/Utils/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -660,7 +661,7 @@ class _SettingsState extends State<Settings> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'GlycoSnap is intended for individuals who are 13 years or older. If you are under 18, you must have parental or guardian consent to use the app.',
+                  'GlycoSnap is intended for individuals who are 13 years or older. If you are under 13, you must have parental or guardian consent to use the app.',
                   style: TextStyle(
                     color: _isDarkMode ? Colors.white : Colors.black,
                     fontFamily: 'Poppins',
@@ -839,6 +840,248 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  // Show dialog for change password
+  void _showChangePasswordDialog(BuildContext context) {
+    final TextEditingController currentPasswordController =
+        TextEditingController();
+    final TextEditingController newPasswordController = TextEditingController();
+    final TextEditingController confirmPasswordController =
+        TextEditingController();
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+              title: Text(
+                'Change Password',
+                style: TextStyle(
+                  color: _isDarkMode ? Colors.white : Colors.black,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: currentPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Current Password',
+                        labelStyle: TextStyle(
+                          color: _isDarkMode ? Colors.white70 : Colors.black54,
+                          fontFamily: 'Poppins',
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color:
+                                _isDarkMode ? Colors.white30 : Colors.black26,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: _isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        color: _isDarkMode ? Colors.white : Colors.black,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: newPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'New Password',
+                        labelStyle: TextStyle(
+                          color: _isDarkMode ? Colors.white70 : Colors.black54,
+                          fontFamily: 'Poppins',
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color:
+                                _isDarkMode ? Colors.white30 : Colors.black26,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: _isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        color: _isDarkMode ? Colors.white : Colors.black,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: confirmPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm New Password',
+                        labelStyle: TextStyle(
+                          color: _isDarkMode ? Colors.white70 : Colors.black54,
+                          fontFamily: 'Poppins',
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color:
+                                _isDarkMode ? Colors.white30 : Colors.black26,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: _isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                      style: TextStyle(
+                        color: _isDarkMode ? Colors.white : Colors.black,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed:
+                      isLoading ? null : () => Navigator.of(context).pop(),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: _isDarkMode ? Colors.white70 : Colors.grey,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          if (newPasswordController.text !=
+                              confirmPasswordController.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'New passwords do not match',
+                                  style: TextStyle(fontFamily: 'Poppins'),
+                                ),
+                                backgroundColor: AppTheme.darkError,
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (newPasswordController.text.length < 6) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Password must be at least 6 characters',
+                                  style: TextStyle(fontFamily: 'Poppins'),
+                                ),
+                                backgroundColor: AppTheme.darkError,
+                              ),
+                            );
+                            return;
+                          }
+
+                          setState(() {
+                            isLoading = true;
+                          });
+
+                          try {
+                            // Get the current user
+                            final user = FirebaseAuth.instance.currentUser;
+                            if (user == null) {
+                              throw Exception('User not logged in');
+                            }
+
+                            // Reauthenticate user
+                            final credential = EmailAuthProvider.credential(
+                              email: user.email!,
+                              password: currentPasswordController.text,
+                            );
+
+                            await user.reauthenticateWithCredential(credential);
+
+                            // Update password
+                            await user
+                                .updatePassword(newPasswordController.text);
+
+                            if (mounted) {
+                              Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Password updated successfully',
+                                    style: TextStyle(fontFamily: 'Poppins'),
+                                  ),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    e.toString().contains('wrong-password')
+                                        ? 'Current password is incorrect'
+                                        : 'Failed to update password',
+                                    style: TextStyle(fontFamily: 'Poppins'),
+                                  ),
+                                  backgroundColor: AppTheme.darkError,
+                                ),
+                              );
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          }
+                        },
+                  child: isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              _isDarkMode
+                                  ? Colors.lightBlueAccent
+                                  : Colors.blue,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          'Update',
+                          style: TextStyle(
+                            color: _isDarkMode
+                                ? Colors.lightBlueAccent
+                                : Colors.blue,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -976,7 +1219,7 @@ class _SettingsState extends State<Settings> {
                       : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  _showFeatureDialog(context, 'Change Password');
+                  _showChangePasswordDialog(context);
                 },
               ),
 

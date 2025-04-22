@@ -207,7 +207,9 @@ class _Question2State extends State<Question2> {
       firstDate: DateTime(1900),
       initialDate: DateTime.now(),
     );
-    datePickerController.text = DateFormat('yyyy-MM-dd').format(pickedDate!);
+    if (pickedDate != null) {
+      datePickerController.text = DateFormat('yyyy-MM-dd').format(pickedDate!);
+    }
   }
 
   void _validateAndProceed() {

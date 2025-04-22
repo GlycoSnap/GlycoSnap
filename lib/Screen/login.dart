@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:glycosnap/Utils/colors.dart';
 import 'package:glycosnap/main.dart';
 import 'package:pretty_animated_buttons/pretty_animated_buttons.dart';
+import 'package:glycosnap/Authenticate/auth_service.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,7 +19,8 @@ class _LoginState extends State<Login> {
   bool _isPasswordVisible = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool _isLoading = false; // Track loading state
+  bool _isLoading = false;
+  final AuthService _authService = AuthService();
 
   @override
   void dispose() {
@@ -29,7 +32,7 @@ class _LoginState extends State<Login> {
   Future<void> _signInWithEmailAndPassword() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
-        _isLoading = true; // Show loading indicator
+        _isLoading = true;
       });
       try {
         final UserCredential userCredential =
@@ -65,9 +68,54 @@ class _LoginState extends State<Login> {
             snackPosition: SnackPosition.BOTTOM);
       } finally {
         setState(() {
-          _isLoading = false; // Hide loading indicator
+          _isLoading = false;
         });
       }
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final UserCredential? userCredential =
+          await _authService.signInWithGoogle();
+      if (userCredential?.user != null) {
+        Get.offAll(() => const MainScreen());
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to sign in with Google: $e',
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _signInWithApple() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final UserCredential? userCredential = await _authService.signInWithApple(
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: 'com.example.glycosnap',
+          redirectUri: Uri.parse(
+              'https://glycosnap-c605c.firebaseapp.com/__/auth/handler'),
+        ),
+      );
+      if (userCredential?.user != null) {
+        Get.offAll(() => const MainScreen());
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to sign in with Apple: $e',
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -102,139 +150,130 @@ class _LoginState extends State<Login> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    _buildTextField(
-                        emailController, "Email", Icons.email, false),
-                    SizedBox(height: size.height * 0.05),
-                    _buildTextField(
-                        passwordController, "Password", Icons.lock, true),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: () => Get.toNamed('/forgot-password'),
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                    // Email field
+                    TextFormField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'Poppins',
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!GetUtils.isEmail(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(height: size.height * 0.04),
-              PrettyWaveButton(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                horizontalPadding: 120,
-                onPressed: () {
-                  if (!_isLoading) {
-                    _signInWithEmailAndPassword();
-                  }
-                },
-                child: _isLoading
-                    ? CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.onPrimary)
-                    : Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                    SizedBox(height: size.height * 0.02),
+                    // Password field
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: !_isPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontFamily: 'Poppins',
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
                         ),
                       ),
-              ),
-              SizedBox(height: size.height * 0.06),
-              _buildSocialLoginSection(size),
-              SizedBox(height: size.height * 0.07),
-              GestureDetector(
-                onTap: () => Get.toNamed('/slides'),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "Not a member? ",
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.7),
-                          fontWeight: FontWeight.w300,
-                          fontSize: 16,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: size.height * 0.03),
+                    // Login button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed:
+                            _isLoading ? null : _signInWithEmailAndPassword,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Text(
+                                'Login',
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16,
+                                ),
+                              ),
                       ),
-                      TextSpan(
-                        text: "Register now",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 16,
+                    ),
+                    SizedBox(height: size.height * 0.03),
+                    // Social login buttons
+                    _buildSocialLoginSection(size),
+                    SizedBox(height: size.height * 0.03),
+                    // Register link
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account?",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontFamily: 'Poppins',
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                        TextButton(
+                          onPressed: () {
+                            Get.toNamed('/register');
+                          },
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField(
-    TextEditingController controller,
-    String label,
-    IconData icon,
-    bool isPassword,
-  ) {
-    return TextFormField(
-      controller: controller,
-      obscureText: isPassword ? !_isPasswordVisible : false,
-      keyboardType: isPassword
-          ? TextInputType.visiblePassword
-          : TextInputType.emailAddress,
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.onSurface,
-      ),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surface,
-        labelText: label,
-        labelStyle: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-        ),
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                ),
-                onPressed: () =>
-                    setState(() => _isPasswordVisible = !_isPasswordVisible),
-              )
-            : Icon(
-                icon,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter your $label';
-        }
-        if (label == "Email" &&
-            !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-          return 'Please enter a valid email address';
-        }
-        if (label == "Password" && value.length < 6) {
-          return 'Password must be at least 6 characters';
-        }
-        return null;
-      },
     );
   }
 
@@ -247,19 +286,16 @@ class _LoginState extends State<Login> {
             Container(
               height: 3,
               width: size.width * 0.17,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
+              color: Colors.black12,
             ),
-            Text(
+            const Text(
               "  Or continue with  ",
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
+              style: TextStyle(fontSize: 16),
             ),
             Container(
               height: 3,
               width: size.width * 0.17,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
+              color: Colors.black12,
             ),
           ],
         ),
@@ -276,16 +312,22 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildSocialIcon(String image) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
-          width: 2,
+    return GestureDetector(
+      onTap: () {
+        if (image.contains('google')) {
+          _signInWithGoogle();
+        } else if (image.contains('apple')) {
+          _signInWithApple();
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white, width: 2),
         ),
+        child: Image.asset(image, height: 35),
       ),
-      child: Image.asset(image, height: 35),
     );
   }
 }
