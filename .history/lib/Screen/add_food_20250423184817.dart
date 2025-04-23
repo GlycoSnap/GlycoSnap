@@ -59,11 +59,7 @@ final String baseUrl = const String.fromEnvironment(
     }
     try {
       var base64Image = _imageToBase64(_imageFile!);
-      final response = await http.post(
-  Uri.parse('$baseUrl/predict'), // Add /predict
-  headers: {'Content-Type': 'application/json; charset=UTF-8'},
-  body: jsonEncode({'image': base64Image}),
-);
+      
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;

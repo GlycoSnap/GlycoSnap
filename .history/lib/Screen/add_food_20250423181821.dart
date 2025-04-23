@@ -25,10 +25,11 @@ class _AddFoodState extends State<AddFood> with SingleTickerProviderStateMixin {
   final double _glycemicLoad = 0.0;
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
-final String baseUrl = const String.fromEnvironment(
+  final String baseUrl = const String.fromEnvironment(
   'FLASK_API_URL',
   defaultValue: 'http://192.168.0.102:5000',
 );
+
   Future<Map<String, dynamic>>? _glycemicLoadFuture;
 
   Future<void> _pickImage(ImageSource source) async {
@@ -60,10 +61,10 @@ final String baseUrl = const String.fromEnvironment(
     try {
       var base64Image = _imageToBase64(_imageFile!);
       final response = await http.post(
-  Uri.parse('$baseUrl/predict'), // Add /predict
-  headers: {'Content-Type': 'application/json; charset=UTF-8'},
-  body: jsonEncode({'image': base64Image}),
-);
+        Uri.parse(baseUrl),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode({'image': base64Image}),
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;

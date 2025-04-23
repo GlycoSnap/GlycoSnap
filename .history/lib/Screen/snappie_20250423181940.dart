@@ -22,7 +22,7 @@ class _ChatPageState extends State with TickerProviderStateMixin {
 
   // Replace with your backend URL
   final String apiUrl = const String.fromEnvironment('FASTAPI_URL',
-      defaultValue: 'http://192.168.0.102:8000');
+      defaultValue: 'http://:8000');
 
   @override
   void dispose() {

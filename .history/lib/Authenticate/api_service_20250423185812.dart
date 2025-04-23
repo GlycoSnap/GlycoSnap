@@ -59,10 +59,10 @@ class ApiService {
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode({
-        'food_name': foodName,
-        'glycemic_load': glycemicLoad,
-        'meal_type': mealType,
-      }),
+  'food_name': foodName,
+  'glycemic_load': glycemicLoad,
+  'meal_type': mealType,
+}),
     );
 
     if (response.statusCode != 201) {

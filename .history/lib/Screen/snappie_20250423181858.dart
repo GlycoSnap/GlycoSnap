@@ -21,8 +21,10 @@ class _ChatPageState extends State with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
 
   // Replace with your backend URL
-  final String apiUrl = const String.fromEnvironment('FASTAPI_URL',
-      defaultValue: 'http://192.168.0.102:8000');
+  final String baseUrl = const String.fromEnvironment(
+  'FLASK_API_URL',
+  defaultValue: 'http://192.168.0.102:5000',
+);
 
   @override
   void dispose() {

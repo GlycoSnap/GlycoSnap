@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ApiService {
   final String baseUrl = const String.fromEnvironment(
     'BACKEND_URL',
-    defaultValue: 'http://192.168.0.102:3000',
+    defaultValue: 'http://:3000',
   );
   final SupabaseClient supabase = Supabase.instance.client;
 
@@ -59,7 +59,7 @@ class ApiService {
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode({
-        'food_name': foodName,
+        'name': foodName,
         'glycemic_load': glycemicLoad,
         'meal_type': mealType,
       }),
