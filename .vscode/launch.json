@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "GlycoSnap",
+        "request": "launch",
+        "type": "dart",
+        "program": "lib/main.dart",
+        "args": [
+          "--debug",
+          "--dart-define=BACKEND_URL=http://192.168.0.102:3000"
+        ]
+      }
+    ]
+  }

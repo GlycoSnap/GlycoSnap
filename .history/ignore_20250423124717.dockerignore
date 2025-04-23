@@ -1,0 +1,16 @@
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Ignore Python virtual environment
+venv/
+
+# Ignore Jupyter Notebook files
+*.ipynb
+
+# Ignore other unnecessary files
+.git
+.idea
+build
+.dart_tool
+.pub-cache
+node_modules

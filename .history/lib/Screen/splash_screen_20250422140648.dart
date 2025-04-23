@@ -1,0 +1,158 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:glycosnap/Screen/login.dart';
+import 'package:glycosnap/Screen/slides.dart';
+import 'package:glycosnap/main.dart';
+import 'package:pretty_animated_buttons/pretty_animated_buttons.dart';
+import 'package:glycosnap/Utils/colors.dart';
+
+class MySplashScreen extends StatefulWidget {
+  const MySplashScreen({super.key});
+
+  @override
+  State<MySplashScreen> createState() => _MySplashScreenState();
+}
+
+class _MySplashScreenState extends State<MySplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize animation controller and fade animation
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 3), // Duration of the fade-in effect
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    // Start the fade-in animation
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 30), () {
+      Get.offAll(() => const AuthWrapper());
+    });
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Container(
+        color: lightBackground,
+        height: size.height,
+        width: size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 300),
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Glyco',
+                      style: TextStyle(
+                        fontFamily: 'OpenSauce',
+                        fontSize: 60,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xff027a8f),
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10.0,
+                            color: Colors.black.withOpacity(0.5),
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Snap',
+                      style: TextStyle(
+                        fontFamily: 'OpenSauce',
+                        fontSize: 60,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xff071332),
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10.0,
+                            color: Colors.black.withOpacity(0.5),
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 45),
+            Text(
+              "Visualize wellness:\nTransforming plates into insights",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'OpenSauce',
+                fontSize: 16,
+                color: colorDark,
+              ),
+            ),
+            const SizedBox(height: 150),
+            PrettyWaveButton(
+              backgroundColor: colorDark,
+              horizontalPadding: 120,
+              child: const Text(
+                'Sign-up',
+                style: TextStyle(
+                  fontFamily: 'OpenSauce',
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Slides()),
+                );
+              },
+            ),
+            PrettyWaveButton(
+              backgroundColor: colorDark,
+              horizontalPadding: 130,
+              child: const Text(
+                'Login',
+                style: TextStyle(
+                  fontFamily: 'OpenSauce',
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Login()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

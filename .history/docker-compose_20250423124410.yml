@@ -1,0 +1,52 @@
+services:
+  model:
+    build: ./Model
+    image: glycosnap_flask:latest
+    container_name: glycosnap_flask
+    volumes:
+      - ./Model:/app
+      - ./Model/credentials:/app/credentials:ro
+      - ./Model/model:/app/model:ro
+    ports:
+      - "5000:5000"
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/credentials.json
+      - FLASK_APP=app.py
+    command: ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+
+  snappie:
+    build: ./snappie
+    image: glycosnap_fastapi:latest
+    container_name: glycosnap_fastapi
+    volumes:
+      - ./snappie:/app
+      - ./Model/model:/app/model:ro
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_API_KEY=AIzaSyAZm5KvRtMP1_2kBgv-y3DLBXKryp9QFsk
+    command: ["uvicorn", "chatbot:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  backend:
+    build: ./backendimage: glycosnap_backend:latest
+  container_name: glycosnap_backend
+  ports:
+    - "3000:3000"
+  env_file:
+    - ./backend/.env  
+
+  flutter_app:
+    build:
+      context: .
+    container_name: glycosnap_flutter
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - model
+      - snappie
+    environment:
+      - FLASK_API_URL=http://model:5000
+      - FASTAPI_URL=http://snappie:8000
+    command: ["flutter", "run", "--debug", "-d", "RZCXB0NLV4H"]
