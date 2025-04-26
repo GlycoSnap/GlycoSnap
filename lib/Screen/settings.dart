@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart' show PackageInfo;
 import 'package:glycosnap/Utils/theme.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:glycosnap/Screen/account_settings.dart';
+import 'package:glycosnap/Screen/login.dart';
+import 'package:glycosnap/Screen/dietary_history.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -166,11 +170,10 @@ class _SettingsState extends State<Settings> {
                   ? AppTheme.darkOnSurface
                   : AppTheme.lightOnSurface,
               fontFamily: 'Poppins',
-              fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
-            'Are you sure you want to delete your account? This action cannot be undone.',
+            'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.',
             style: TextStyle(
               color: _isDarkMode
                   ? AppTheme.darkOnSurface
@@ -185,23 +188,23 @@ class _SettingsState extends State<Settings> {
                 'Cancel',
                 style: TextStyle(
                   color: _isDarkMode
-                      ? AppTheme.darkOnSurface.withOpacity(0.7)
-                      : AppTheme.lightOnSurface.withOpacity(0.7),
+                      ? AppTheme.darkPrimary
+                      : AppTheme.lightPrimary,
                   fontFamily: 'Poppins',
                 ),
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
-                Get.offAllNamed('/login');
+                await _deleteAccount(context);
               },
               child: Text(
-                'Delete Account',
+                'Delete',
                 style: TextStyle(
                   color: AppTheme.darkError,
-                  fontWeight: FontWeight.bold,
                   fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -209,6 +212,73 @@ class _SettingsState extends State<Settings> {
         );
       },
     );
+  }
+
+  Future<void> _deleteAccount(BuildContext context) async {
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: _isDarkMode ? AppTheme.darkPrimary : AppTheme.lightPrimary,
+            ),
+          );
+        },
+      );
+
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        throw Exception('No user logged in');
+      }
+
+      // Delete user data from Supabase
+      await Supabase.instance.client
+          .from('users')
+          .delete()
+          .eq('user_id', user.id);
+
+      // Delete user's meals
+      await Supabase.instance.client
+          .from('meals')
+          .delete()
+          .eq('user_id', user.id);
+
+      // Delete the user's authentication
+      await Supabase.instance.client.auth.admin.deleteUser(user.id);
+
+      // Sign out
+      await Supabase.instance.client.auth.signOut();
+
+      // Close loading indicator
+      Navigator.of(context).pop();
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Account deleted successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Navigate to login screen
+      Get.offAll(() => const Login());
+    } catch (e) {
+      // Close loading indicator if it's showing
+      if (Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete account: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   // Show dialog for share app functionality
@@ -839,6 +909,219 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  // Show dialog for change password
+  void _showChangePasswordDialog(BuildContext context) {
+    final TextEditingController currentPasswordController =
+        TextEditingController();
+    final TextEditingController newPasswordController = TextEditingController();
+    final TextEditingController confirmPasswordController =
+        TextEditingController();
+    bool _isLoading = false;
+    bool _isCurrentPasswordVisible = false;
+    bool _isNewPasswordVisible = false;
+    bool _isConfirmPasswordVisible = false;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: _isDarkMode ? _darkModeColor : Colors.white,
+              title: Text(
+                'Change Password',
+                style: TextStyle(
+                  color: _isDarkMode ? Colors.white : Colors.black,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: currentPasswordController,
+                      obscureText: !_isCurrentPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Current Password',
+                        labelStyle: TextStyle(
+                          color: _isDarkMode ? Colors.white70 : Colors.black54,
+                          fontFamily: 'Poppins',
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isCurrentPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color:
+                                _isDarkMode ? Colors.white70 : Colors.black54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isCurrentPasswordVisible =
+                                  !_isCurrentPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: newPasswordController,
+                      obscureText: !_isNewPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'New Password',
+                        labelStyle: TextStyle(
+                          color: _isDarkMode ? Colors.white70 : Colors.black54,
+                          fontFamily: 'Poppins',
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isNewPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color:
+                                _isDarkMode ? Colors.white70 : Colors.black54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isNewPasswordVisible = !_isNewPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: confirmPasswordController,
+                      obscureText: !_isConfirmPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm New Password',
+                        labelStyle: TextStyle(
+                          color: _isDarkMode ? Colors.white70 : Colors.black54,
+                          fontFamily: 'Poppins',
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isConfirmPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color:
+                                _isDarkMode ? Colors.white70 : Colors.black54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isConfirmPasswordVisible =
+                                  !_isConfirmPasswordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: _isDarkMode ? Colors.white70 : Colors.black54,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          if (newPasswordController.text !=
+                              confirmPasswordController.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('New passwords do not match'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (newPasswordController.text.length < 6) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'New password must be at least 6 characters'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          setState(() => _isLoading = true);
+
+                          try {
+                            final user =
+                                Supabase.instance.client.auth.currentUser;
+                            if (user == null) {
+                              throw Exception('No user logged in');
+                            }
+
+                            // Update password
+                            await Supabase.instance.client.auth.updateUser(
+                              UserAttributes(
+                                password: newPasswordController.text,
+                              ),
+                            );
+
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Password updated successfully'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Failed to update password: ${e.toString()}'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          } finally {
+                            setState(() => _isLoading = false);
+                          }
+                        },
+                  child: _isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: _isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        )
+                      : Text(
+                          'Update',
+                          style: TextStyle(
+                            color: _isDarkMode
+                                ? Colors.lightBlueAccent
+                                : Colors.blue,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -890,17 +1173,7 @@ class _SettingsState extends State<Settings> {
             ),
             tiles: [
               // Dark Mode Toggle
-              SettingsTile.switchTile(
-                onToggle: (value) {
-                  _updateDarkMode(value);
-                },
-                initialValue: _isDarkMode,
-                leading: Icon(
-                  Icons.dark_mode,
-                  color: _isDarkMode
-                      ? AppTheme.darkOnSurface
-                      : AppTheme.lightOnSurface,
-                ),
+              SettingsTile(
                 title: Text(
                   'Dark mode',
                   style: TextStyle(
@@ -921,20 +1194,34 @@ class _SettingsState extends State<Settings> {
                         : AppTheme.lightOnSurface.withOpacity(0.7),
                   ),
                 ),
-              ),
-
-              // Grams setting toggle
-              SettingsTile.switchTile(
-                onToggle: (value) {
-                  _updateGrams(value);
-                },
-                initialValue: _useGrams,
                 leading: Icon(
-                  Icons.scale,
+                  Icons.dark_mode,
                   color: _isDarkMode
                       ? AppTheme.darkOnSurface
                       : AppTheme.lightOnSurface,
                 ),
+                trailing: Switch(
+                  value: _isDarkMode,
+                  onChanged: (value) {
+                    _updateDarkMode(value);
+                  },
+                  activeColor: _isDarkMode
+                      ? AppTheme.darkPrimary
+                      : AppTheme.lightPrimary,
+                  activeTrackColor: _isDarkMode
+                      ? AppTheme.darkPrimary.withOpacity(0.5)
+                      : AppTheme.lightPrimary.withOpacity(0.5),
+                  inactiveThumbColor: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
+                  inactiveTrackColor: _isDarkMode
+                      ? AppTheme.darkOnSurface.withOpacity(0.1)
+                      : AppTheme.lightOnSurface.withOpacity(0.1),
+                ),
+              ),
+
+              // Grams setting toggle
+              SettingsTile(
                 title: Text(
                   'Use grams',
                   style: TextStyle(
@@ -954,6 +1241,30 @@ class _SettingsState extends State<Settings> {
                         ? AppTheme.darkOnSurface.withOpacity(0.7)
                         : AppTheme.lightOnSurface.withOpacity(0.7),
                   ),
+                ),
+                leading: Icon(
+                  Icons.scale,
+                  color: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
+                ),
+                trailing: Switch(
+                  value: _useGrams,
+                  onChanged: (value) {
+                    _updateGrams(value);
+                  },
+                  activeColor: _isDarkMode
+                      ? AppTheme.darkPrimary
+                      : AppTheme.lightPrimary,
+                  activeTrackColor: _isDarkMode
+                      ? AppTheme.darkPrimary.withOpacity(0.5)
+                      : AppTheme.lightPrimary.withOpacity(0.5),
+                  inactiveThumbColor: _isDarkMode
+                      ? AppTheme.darkOnSurface
+                      : AppTheme.lightOnSurface,
+                  inactiveTrackColor: _isDarkMode
+                      ? AppTheme.darkOnSurface.withOpacity(0.1)
+                      : AppTheme.lightOnSurface.withOpacity(0.1),
                 ),
               ),
 
@@ -976,7 +1287,7 @@ class _SettingsState extends State<Settings> {
                       : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  _showFeatureDialog(context, 'Change Password');
+                  _showChangePasswordDialog(context);
                 },
               ),
 
@@ -999,7 +1310,7 @@ class _SettingsState extends State<Settings> {
                       : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  _showFeatureDialog(context, 'Notifications');
+                  Get.toNamed('/notifications');
                 },
               ),
             ],
@@ -1035,7 +1346,12 @@ class _SettingsState extends State<Settings> {
                       : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  Get.toNamed('/account');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AccountSettings(),
+                    ),
+                  );
                 },
               ),
               SettingsTile(
@@ -1056,7 +1372,12 @@ class _SettingsState extends State<Settings> {
                       : AppTheme.lightOnSurface,
                 ),
                 onPressed: (BuildContext context) {
-                  _showFeatureDialog(context, 'Dietary history');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DietaryHistory(),
+                    ),
+                  );
                 },
               ),
               SettingsTile(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:glycosnap/Authenticate/nyt_api.dart';
 import 'package:glycosnap/Authenticate/web_view.dart';
 import 'package:glycosnap/Authenticate/nyt_articles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class Community extends StatefulWidget {
   const Community({super.key});
@@ -13,22 +15,90 @@ class Community extends StatefulWidget {
 class _CommunityState extends State<Community> {
   int visit = 0;
   final SearchController controller = SearchController();
+  static List<Article>? _cachedArticles;
+  static DateTime? _lastFetchTime;
+  static const Duration cacheDuration = Duration(hours: 1);
 
-  late Future<List<Article>> futureArticles;
+  Future<List<Article>> _getArticles() async {
+    try {
+      // If we have valid cached articles, return them immediately
+      if (_cachedArticles != null && _lastFetchTime != null) {
+        final now = DateTime.now();
+        final timeSinceLastFetch = now.difference(_lastFetchTime!);
+        if (timeSinceLastFetch < cacheDuration) {
+          return _cachedArticles!;
+        }
+      }
+
+      // If no cache or cache expired, fetch new articles
+      final nyTimesService = NYTimesService();
+      final articles = await Future.wait<List<Article>>([
+        nyTimesService.fetchDiabetesArticles(),
+        nyTimesService.fetchDietArticles(),
+        nyTimesService.fetchBloodSugarArticles(),
+      ]).then((List<List<Article>> results) {
+        return results.expand((articles) => articles).toList();
+      });
+
+      // Update static cache
+      _cachedArticles = articles;
+      _lastFetchTime = DateTime.now();
+
+      // Save to SharedPreferences as backup
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('cached_articles',
+          jsonEncode(articles.map((a) => a.toJson()).toList()));
+      await prefs.setString(
+          'last_fetch_time', _lastFetchTime!.toIso8601String());
+
+      return articles;
+    } catch (e) {
+      print('Error fetching articles: $e');
+      // If there's an error, try to return cached articles if available
+      if (_cachedArticles != null) {
+        return _cachedArticles!;
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> _loadCachedArticles() async {
+    try {
+      // First try to load from static cache
+      if (_cachedArticles != null && _lastFetchTime != null) {
+        final now = DateTime.now();
+        final timeSinceLastFetch = now.difference(_lastFetchTime!);
+        if (timeSinceLastFetch < cacheDuration) {
+          return;
+        }
+      }
+
+      // If static cache is invalid, try to load from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final cachedArticlesJson = prefs.getString('cached_articles');
+      final lastFetchTimeStr = prefs.getString('last_fetch_time');
+
+      if (cachedArticlesJson != null && lastFetchTimeStr != null) {
+        final lastFetchTime = DateTime.parse(lastFetchTimeStr);
+        final now = DateTime.now();
+        final timeSinceLastFetch = now.difference(lastFetchTime);
+
+        if (timeSinceLastFetch < cacheDuration) {
+          final List<dynamic> articlesJson = jsonDecode(cachedArticlesJson);
+          _cachedArticles =
+              articlesJson.map((json) => Article.fromJson(json)).toList();
+          _lastFetchTime = lastFetchTime;
+        }
+      }
+    } catch (e) {
+      print('Error loading cached articles: $e');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    final nyTimesService = NYTimesService();
-
-    futureArticles = Future.wait<List<Article>>([
-      nyTimesService.fetchDiabetesArticles(),
-      nyTimesService.fetchDietArticles(),
-      nyTimesService.fetchBloodSugarArticles(),
-    ]).then((List<List<Article>> results) {
-      // Flatten the list of lists into a single list
-      return results.expand((articles) => articles).toList();
-    });
+    _loadCachedArticles();
   }
 
   @override
@@ -65,7 +135,7 @@ class _CommunityState extends State<Community> {
         ],
       ),
       body: FutureBuilder<List<Article>>(
-        future: futureArticles,
+        future: _getArticles(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -100,71 +170,55 @@ class _CommunityState extends State<Community> {
                   child: Container(
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondary.withValues(alpha: 0.5)),
-                    
-                    padding: const EdgeInsets.only(right: 10),
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(15),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withValues(alpha: 0.5)),
+                    padding: const EdgeInsets.all(20),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 16),
                     child: Stack(
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Category',
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 14,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withOpacity(0.6),
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    article.title,
+                                    style: TextStyle(
+                                      fontFamily: 'PoppinsBold',
+                                      fontSize: 18,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
                                     ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      article.title,
-                                      style: TextStyle(
-                                        fontFamily: 'PoppinsBold',
-                                        fontSize: 17,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                      ),
-                                      maxLines: 2,
+                                    maxLines: 2,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    article.description,
+                                    style: TextStyle(
+                                      fontFamily: 'OpenSauce',
+                                      fontSize: 14,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.7),
                                     ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      article.description,
-                                      style: TextStyle(
-                                        fontFamily: 'OpenSauce',
-                                        fontSize: 13,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withOpacity(0.6),
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 5,
-                                    ),
-                                  ],
-                                ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
+                                  ),
+                                ],
                               ),
                             ),
                             Container(
-                              alignment: Alignment.bottomRight,
+                              alignment: Alignment.topRight,
                               child: IconButton(
                                 icon: Icon(
                                   Icons.bookmark_add_outlined,

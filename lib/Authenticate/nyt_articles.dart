@@ -19,4 +19,13 @@ class Article {
       url: json['web_url'] ?? '',
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'content': content,
+      'url': url,
+    };
+  }
 }

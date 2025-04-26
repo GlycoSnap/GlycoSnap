@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
+import 'package:glycosnap/Screen/meal_provider.dart';
+import 'package:intl/intl.dart';
 
 class SalesData {
   final String day;
@@ -18,30 +21,103 @@ class Review extends StatefulWidget {
 }
 
 class _ReviewState extends State<Review> {
-  int visit = 0;
-
   late TooltipBehavior _tooltipBehavior;
+  String selectedDay = '';
+  List<SalesData> salesData = [];
+  double totalGlycemicLoad = 0;
+  double totalCalories = 0;
 
   @override
   void initState() {
-    _tooltipBehavior = TooltipBehavior(enable: true);
     super.initState();
+    _tooltipBehavior = TooltipBehavior(enable: true);
+    _loadMealData();
   }
 
-  String selectedDay = '';
-  final List<SalesData> salesData = [
-    SalesData('Mon', 35),
-    SalesData('Tue', 28),
-    SalesData('Wed', 34),
-    SalesData('Thu', 32),
-    SalesData('Fri', 60),
-    SalesData('Sat', 18),
-    SalesData('Sun', 30),
-  ];
+  Future<void> _loadMealData() async {
+    try {
+      final mealProvider = Provider.of<MealProvider>(context, listen: false);
+      await mealProvider.fetchMeals();
+      if (mounted) {
+        _updateChartData(mealProvider);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading meal data: ${e.toString()}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _updateChartData(MealProvider mealProvider) {
+    // Get all meals
+    final allMeals = [
+      ...mealProvider.breakfast,
+      ...mealProvider.lunch,
+      ...mealProvider.supper,
+    ];
+
+    // Group meals by day of the week
+    final Map<String, List<Meal>> mealsByDay = {};
+    for (var meal in allMeals) {
+      final date = DateTime.parse(meal.createdAt);
+      final dayOfWeek = DateFormat('EEE').format(date);
+      if (!mealsByDay.containsKey(dayOfWeek)) {
+        mealsByDay[dayOfWeek] = [];
+      }
+      mealsByDay[dayOfWeek]!.add(meal);
+    }
+
+    // Initialize data for all days of the week
+    final Map<String, double> dailyTotals = {
+      'Mon': 0,
+      'Tue': 0,
+      'Wed': 0,
+      'Thu': 0,
+      'Fri': 0,
+      'Sat': 0,
+      'Sun': 0,
+    };
+
+    // Calculate totals for each day
+    mealsByDay.forEach((day, meals) {
+      final totalGL = meals.fold<double>(
+        0,
+        (sum, meal) => sum + meal.glycemicLoad,
+      );
+      dailyTotals[day] = totalGL;
+    });
+
+    // Convert to SalesData list
+    salesData = dailyTotals.entries
+        .map((entry) => SalesData(entry.key, entry.value))
+        .toList();
+
+    // Calculate overall totals
+    totalGlycemicLoad = allMeals.fold<double>(
+      0,
+      (sum, meal) => sum + meal.glycemicLoad,
+    );
+
+    // Update UI
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   void _onDateChange(DateTime date) {
     setState(() {
       selectedDay = _getDayString(date);
+      // Filter data for selected day
+      final selectedDayData = salesData.firstWhere(
+        (data) => data.day == selectedDay,
+        orElse: () => SalesData(selectedDay, 0),
+      );
+      totalGlycemicLoad = selectedDayData.sales;
     });
   }
 
@@ -70,6 +146,12 @@ class _ReviewState extends State<Review> {
   Widget build(BuildContext context) {
     final EasyInfiniteDateTimelineController controller =
         EasyInfiniteDateTimelineController();
+    final mealProvider = Provider.of<MealProvider>(context);
+
+    // Only update chart data when necessary
+    if (!mealProvider.isLoading && mounted) {
+      _updateChartData(mealProvider);
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -89,260 +171,179 @@ class _ReviewState extends State<Review> {
           ),
         ),
       ),
-      body: ListView(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(left: 10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: mealProvider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: _loadMealData,
+              child: ListView(
                 children: [
-                  EasyDateTimeLine(
-                    initialDate: DateTime.now(),
-                    onDateChange: _onDateChange,
-                    headerProps: EasyHeaderProps(
-                      monthPickerType: MonthPickerType.dropDown,
-                      dateFormatter: DateFormatter.fullDateDMonthAsStrY(),
-                      monthStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontFamily: 'Poppins',
-                      ),
-                      selectedDateStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                    dayProps: EasyDayProps(
-                      dayStructure: DayStructure.dayStrDayNum,
-                      activeDayStyle: DayStyle(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Theme.of(context).colorScheme.primary,
-                              Theme.of(context).colorScheme.secondary,
-                            ],
-                          ),
-                        ),
-                      ),
-                      inactiveDayStyle: DayStyle(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: Theme.of(context).colorScheme.surface,
-                        ),
-                        dayNumStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontFamily: 'Poppins',
-                        ),
-                        dayStrStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
-                    ),
-                  ),
                   Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.only(left: 10),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
                     ),
-                    child: SfCartesianChart(
-                      primaryXAxis: CategoryAxis(
-                        labelStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
-                      primaryYAxis: NumericAxis(
-                        labelStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
-                      legend: Legend(
-                        isVisible: true,
-                        textStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
-                      tooltipBehavior: _tooltipBehavior,
-                      series: <CartesianSeries>[
-                        LineSeries<SalesData, String>(
-                          name: 'Glycemic Load',
-                          dataSource: salesData,
-                          color: Theme.of(context).colorScheme.primary,
-                          xValueMapper: (SalesData sales, _) => sales.day,
-                          yValueMapper: (SalesData sales, _) => sales.sales,
-                          dataLabelSettings: DataLabelSettings(
-                            isVisible: true,
-                            textStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontFamily: 'Poppins',
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          EasyDateTimeLine(
+                            initialDate: DateTime.now(),
+                            onDateChange: _onDateChange,
+                            headerProps: EasyHeaderProps(
+                              monthPickerType: MonthPickerType.dropDown,
+                              dateFormatter:
+                                  DateFormatter.fullDateDMonthAsStrY(),
+                              monthStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontFamily: 'Poppins',
+                              ),
+                              selectedDateStyle: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                            dayProps: EasyDayProps(
+                              dayStructure: DayStructure.dayStrDayNum,
+                              activeDayStyle: DayStyle(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.secondary,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              inactiveDayStyle: DayStyle(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)),
+                                  color: Theme.of(context).colorScheme.surface,
+                                ),
+                                dayNumStyle: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontFamily: 'Poppins',
+                                ),
+                                dayStrStyle: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
                             ),
                           ),
-                          markerSettings: MarkerSettings(
-                            isVisible: true,
-                            shape: DataMarkerType.circle,
-                            color: Theme.of(context).colorScheme.primary,
-                            borderWidth: 2,
-                            borderColor: Theme.of(context).colorScheme.surface,
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 20),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: SfCartesianChart(
+                              primaryXAxis: CategoryAxis(
+                                labelStyle: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              primaryYAxis: NumericAxis(
+                                labelStyle: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              legend: Legend(
+                                isVisible: true,
+                                textStyle: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              tooltipBehavior: _tooltipBehavior,
+                              series: <CartesianSeries>[
+                                LineSeries<SalesData, String>(
+                                  name: 'Glycemic Load',
+                                  dataSource: salesData,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  xValueMapper: (SalesData sales, _) =>
+                                      sales.day,
+                                  yValueMapper: (SalesData sales, _) =>
+                                      sales.sales,
+                                  dataLabelSettings: DataLabelSettings(
+                                    isVisible: true,
+                                    textStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                  markerSettings: MarkerSettings(
+                                    isVisible: true,
+                                    shape: DataMarkerType.circle,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    borderWidth: 2,
+                                    borderColor:
+                                        Theme.of(context).colorScheme.surface,
+                                  ),
+                                ),
+                                if (selectedDay.isNotEmpty)
+                                  ColumnSeries<SalesData, String>(
+                                    name: 'Selected day',
+                                    dataSource: salesData,
+                                    xValueMapper: (SalesData sales, _) =>
+                                        sales.day,
+                                    yValueMapper: (SalesData sales, _) =>
+                                        selectedDay == sales.day
+                                            ? sales.sales
+                                            : 0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary
+                                        .withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
-                        if (selectedDay.isNotEmpty)
-                          ColumnSeries<SalesData, String>(
-                            name: 'Selected day',
-                            dataSource: salesData,
-                            xValueMapper: (SalesData sales, _) => sales.day,
-                            yValueMapper: (SalesData sales, _) =>
-                                selectedDay == sales.day ? sales.sales : 0,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onPrimary
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(5),
+
+                          // Daily summary
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Text(
+                              'Daily summary',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 18,
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                      ],
-                    ),
-                  ),
-
-                  // Meal cards
-                  _buildMealCard(
-                    context,
-                    'Breakfast',
-                    'images/breakfast.jpeg',
-                    '78',
-                    '876',
-                  ),
-                  _buildMealCard(
-                    context,
-                    'Lunch',
-                    'images/lunch.jpeg',
-                    '36',
-                    '1127',
-                  ),
-                  _buildMealCard(
-                    context,
-                    'Supper',
-                    'images/supper.jpeg',
-                    '56',
-                    '635',
-                  ),
-
-                  // Daily summary
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      'Daily summary',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontWeight: FontWeight.bold,
+                          _buildSummaryCard(context),
+                        ],
                       ),
                     ),
                   ),
-                  _buildSummaryCard(context),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMealCard(BuildContext context, String mealName, String imagePath,
-      String glycemicLoad, String calories) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-        ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 30, 10),
-              child: ClipOval(
-                child: Image.asset(
-                  imagePath,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  mealName,
-                  style: TextStyle(
-                    fontFamily: 'OpenSauce',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                _buildInfoRow(
-                  context,
-                  'Glycemic Load: ',
-                  glycemicLoad,
-                ),
-                const SizedBox(height: 8),
-                _buildInfoRow(
-                  context,
-                  'Calories: ',
-                  '$calories cal',
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(BuildContext context, String label, String value) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: label,
-            style: TextStyle(
-              fontFamily: 'OpenSauce',
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-          TextSpan(
-            text: value,
-            style: TextStyle(
-              fontFamily: 'OpenSauce',
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -373,7 +374,7 @@ class _ReviewState extends State<Review> {
                 animationDuration: 3000,
                 radius: 70.0,
                 lineWidth: 11.0,
-                percent: 0.6,
+                percent: totalGlycemicLoad / 100, // Assuming 100 is max
                 progressColor: Theme.of(context).colorScheme.primary,
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 circularStrokeCap: CircularStrokeCap.round,
@@ -387,7 +388,7 @@ class _ReviewState extends State<Review> {
                 animationDuration: 3000,
                 radius: 48.0,
                 lineWidth: 10.0,
-                percent: 0.4,
+                percent: totalCalories / 2000, // Assuming 2000 is max
                 progressColor: Theme.of(context).colorScheme.onPrimary,
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 circularStrokeCap: CircularStrokeCap.round,
@@ -424,7 +425,7 @@ class _ReviewState extends State<Review> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '54.6',
+                    totalGlycemicLoad.toStringAsFixed(1),
                     style: TextStyle(
                       fontFamily: 'OpenSauce',
                       fontSize: 14,
@@ -434,7 +435,7 @@ class _ReviewState extends State<Review> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    '763 cal',
+                    '${totalCalories.toStringAsFixed(0)} cal',
                     style: TextStyle(
                       fontFamily: 'OpenSauce',
                       fontSize: 14,
