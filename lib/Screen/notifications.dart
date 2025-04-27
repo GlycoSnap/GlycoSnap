@@ -22,6 +22,25 @@ class _NotificationsState extends State<Notifications> {
       appBar: AppBar(
         backgroundColor: lightBackground,
         toolbarHeight: 80,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 30,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          'Notifications',
+          style: TextStyle(
+            fontFamily: 'OpenSauce',
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
       ),
       body: ListView(
         children: [
@@ -59,56 +78,52 @@ class _NotificationsState extends State<Notifications> {
                     ),
                   ),
                 ),
-                
-               
                 Padding(
                   padding: const EdgeInsets.only(top: 15),
-                  child: 
-                      Stack(
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 370,
+                        height: 650,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: const Color.fromARGB(255, 205, 233, 230),
+                            width: 1,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 162, 196, 193),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(0, 0),
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: const Color.fromARGB(255, 205, 233, 230),
+                        ),
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 370,
-                            height: 650,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color.fromARGB(255, 205, 233, 230),
-                                width: 1,
-                              ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 162, 196, 193),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 0),
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(20.0),
-                              color: const Color.fromARGB(255, 205, 233, 230),
+                          SizedBox(height: 20),
+                          Text(
+                            'You have no new notifications ',
+                            style: TextStyle(
+                              fontFamily: 'OpenSauce',
+                              fontSize: 15,
+                              color: Colors.black,
                             ),
                           ),
-                          
-                           const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 20),
-                    Text(
-                      'You have no new notifications ',
-                      style: TextStyle(
-                        fontFamily: 'OpenSauce',
-                        fontSize: 15,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
                         ],
                       ),
-                ),
-         ], ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          );
- 
+          ),
+        ],
+      ),
+    );
   }
 }

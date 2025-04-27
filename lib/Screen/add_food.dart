@@ -91,10 +91,11 @@ final String baseUrl = const String.fromEnvironment(
     }
   }
 
- void _showMealSelectionDialog(BuildContext context, String foodName, double glycemicLoad) {
+  void _showMealSelectionDialog(
+      BuildContext context, String foodName, double glycemicLoad) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent closing dialog during async
+      barrierDismissible: true, // Allow dismissing by tapping outside
       builder: (dialogContext) {
         return AlertDialog(
           title: const Text('Add to Meal'),
@@ -102,7 +103,8 @@ final String baseUrl = const String.fromEnvironment(
           actions: [
             TextButton(
               onPressed: () async {
-                await _addMeal(dialogContext, 'breakfast', foodName, glycemicLoad);
+                await _addMeal(
+                    dialogContext, 'breakfast', foodName, glycemicLoad);
               },
               child: const Text('Breakfast'),
             ),
@@ -130,19 +132,41 @@ final String baseUrl = const String.fromEnvironment(
     });
   }
 
-Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodName, double glycemicLoad) async {
+  Future<void> _addMeal(BuildContext dialogContext, String mealType,
+      String foodName, double glycemicLoad) async {
     try {
-      final meal = Meal(name: foodName, glycemicLoad: glycemicLoad);
+      print('Adding meal with data:');
+      print('foodName: $foodName');
+      print('glycemicLoad: $glycemicLoad');
+      print('mealType: $mealType');
+
+      final meal = Meal(
+        name: foodName,
+        glycemicLoad: glycemicLoad,
+        createdAt: DateTime.now().toIso8601String(),
+      );
       final mealProvider = Provider.of<MealProvider>(context, listen: false);
       await mealProvider.addMeal(mealType, meal);
       if (!mounted) return;
+
+      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Added to $mealType')),
+        SnackBar(
+          content: Text('Added to $mealType'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
       );
-      Navigator.pop(dialogContext); // Close dialog
+
+      // Close dialog and refresh the page
+      Navigator.pop(dialogContext);
+      setState(() {
+        _imageFile = null;
+        _glycemicLoadFuture = null;
+      });
     } catch (e) {
       if (!mounted) return;
-      String errorMessage = e.toString().replaceFirst('Exception: Failed to add meal: ', '');
+      String errorMessage =
+          e.toString().replaceFirst('Exception: Failed to add meal: ', '');
       if (errorMessage.startsWith('{"error":"')) {
         try {
           final errorJson = jsonDecode(errorMessage);
@@ -175,8 +199,6 @@ Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodNa
     _controller.dispose();
     super.dispose();
   }
-
-  
 
   void _openChat() {
     Get.to(() => const ChatPage());
@@ -247,17 +269,18 @@ Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodNa
                                 ),
                                 ElevatedButton(
                                   style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStatePropertyAll( Colors.white,),
+                                    backgroundColor: WidgetStatePropertyAll(
+                                      Colors.white,
+                                    ),
                                   ),
                                   onPressed: () =>
                                       _pickImage(ImageSource.camera),
                                   child: Text(
                                     'Open Camera',
-                                    style:
-                                        TextStyle(
-                                          fontSize: size.width * 0.04,
-                                          color: Colors.black,),
+                                    style: TextStyle(
+                                      fontSize: size.width * 0.04,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -305,16 +328,18 @@ Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodNa
                                 ),
                                 ElevatedButton(
                                   style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStatePropertyAll(Colors.white,),
+                                    backgroundColor: WidgetStatePropertyAll(
+                                      Colors.white,
+                                    ),
                                   ),
                                   onPressed: () =>
                                       _pickImage(ImageSource.gallery),
                                   child: Text(
                                     'Open Gallery',
-                                    style:
-                                        TextStyle(fontSize: size.width * 0.04,
-                                        color: Colors.black,),
+                                    style: TextStyle(
+                                      fontSize: size.width * 0.04,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -424,7 +449,8 @@ Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodNa
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(15),
-                                          color: colorScheme.secondary.withValues(alpha: 0.7),
+                                          color: colorScheme.secondary
+                                              .withValues(alpha: 0.7),
                                         ),
                                         padding:
                                             EdgeInsets.all(size.width * 0.03),
@@ -441,8 +467,8 @@ Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodNa
                                                     'N/A';
                                                 return Padding(
                                                   padding: EdgeInsets.symmetric(
-                                                      vertical: size.height *
-                                                          0.005),
+                                                      vertical:
+                                                          size.height * 0.005),
                                                   child: Text(
                                                     '${entry.key}: $value',
                                                     style: TextStyle(
@@ -469,8 +495,8 @@ Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodNa
                                                             FontWeight.bold,
                                                         fontSize:
                                                             size.width * 0.04,
-                                                        color:
-                                                            colorScheme.onSurface,
+                                                        color: colorScheme
+                                                            .onSurface,
                                                       ),
                                                     ),
                                                     TextSpan(
@@ -540,40 +566,40 @@ Future<void> _addMeal(BuildContext dialogContext, String mealType, String foodNa
               ),
               // Floating bot button at bottom right
               Positioned(
-              bottom: size.height * 0.02,
-              right: size.width * 0.05,
-              child: GestureDetector(
-                onTap: _openChat,
-                child: Container(
-                  width: size.width * 0.3,
-                  height: size.width * 0.3,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.primary,
-                        blurRadius: 10,
-                        spreadRadius: 4,
+                bottom: size.height * 0.02,
+                right: size.width * 0.05,
+                child: GestureDetector(
+                  onTap: _openChat,
+                  child: Container(
+                    width: size.width * 0.3,
+                    height: size.width * 0.3,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: colorScheme.primary,
+                          blurRadius: 10,
+                          spreadRadius: 4,
+                        ),
+                      ],
+                      border: Border.all(
+                        color: colorScheme.surface,
+                        width: 0.5,
                       ),
-                    ],
-                    border: Border.all(
-                      color: colorScheme.surface,
-                      width: 0.5,
                     ),
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'images/bot1.png',
-                      fit: BoxFit.cover,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'images/bot1.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }

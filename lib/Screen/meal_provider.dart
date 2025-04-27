@@ -25,22 +25,25 @@ class MealProvider with ChangeNotifier {
       _breakfast = meals
           .where((meal) => meal['meal_type'] == 'breakfast')
           .map((meal) => Meal(
-                name: meal['name'], // Updated to match SQL schema
+                name: meal['name'],
                 glycemicLoad: (meal['glycemic_load'] as num).toDouble(),
+                createdAt: meal['created_at'],
               ))
           .toList();
       _lunch = meals
           .where((meal) => meal['meal_type'] == 'lunch')
           .map((meal) => Meal(
-                name: meal['name'], // Updated to match SQL schema
+                name: meal['name'],
                 glycemicLoad: (meal['glycemic_load'] as num).toDouble(),
+                createdAt: meal['created_at'],
               ))
           .toList();
       _supper = meals
           .where((meal) => meal['meal_type'] == 'supper')
           .map((meal) => Meal(
-                name: meal['name'], // Updated to match SQL schema
+                name: meal['name'],
                 glycemicLoad: (meal['glycemic_load'] as num).toDouble(),
+                createdAt: meal['created_at'],
               ))
           .toList();
       _isLoading = false;
@@ -62,6 +65,8 @@ class MealProvider with ChangeNotifier {
         mealType: mealType,
       );
       await fetchMeals(); // Refresh meals from Supabase
+      _isLoading = false;
+      notifyListeners();
     } catch (e) {
       _isLoading = false;
       notifyListeners();
@@ -74,6 +79,11 @@ class MealProvider with ChangeNotifier {
 class Meal {
   final String name;
   final double glycemicLoad;
+  final String createdAt;
 
-  Meal({required this.name, required this.glycemicLoad});
+  Meal({
+    required this.name,
+    required this.glycemicLoad,
+    required this.createdAt,
+  });
 }

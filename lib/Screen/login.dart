@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pretty_animated_buttons/pretty_animated_buttons.dart';
-import 'package:glycosnap/main.dart';  // adjust if needed
+import 'package:glycosnap/main.dart'; // adjust if needed
+import 'package:glycosnap/Authenticate/api_service.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -13,10 +14,11 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  final emailController    = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+  final ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -32,17 +34,55 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+    try {
+      await _apiService.signInWithGoogle();
+      // Check if user exists in your 'users' table
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        final profile = await Supabase.instance.client
+            .from('users')
+            .select()
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+        if (profile == null) {
+          // Not registered, sign out and prompt to register
+          await Supabase.instance.client.auth.signOut();
+          Get.snackbar(
+            'Access Denied',
+            'No account found - please sign up first.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          return;
+        }
+
+        // Success → go to MainScreen
+        Get.offAll(() => const MainScreen());
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to sign in with Google: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   Future<void> _signInWithEmailAndPassword() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _isLoading = true);
 
     try {
       // Attempt login
-      final AuthResponse res = await Supabase.instance.client.auth
-          .signInWithPassword(
-            email:    emailController.text.trim(),
-            password: passwordController.text.trim(),
-          );
+      final AuthResponse res =
+          await Supabase.instance.client.auth.signInWithPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
       final session = res.session;
       final user = session?.user;
@@ -57,10 +97,10 @@ class _LoginState extends State<Login> {
 
       // Check if user exists in your 'users' table
       final profile = await Supabase.instance.client
-        .from('users')
-        .select()
-        .eq('user_id', user.id)
-        .maybeSingle();
+          .from('users')
+          .select()
+          .eq('user_id', user.id)
+          .maybeSingle();
 
       if (profile == null) {
         // Not registered, sign out and prompt to register
@@ -75,7 +115,6 @@ class _LoginState extends State<Login> {
 
       // Success → go to MainScreen
       Get.offAll(() => const MainScreen());
-
     } on AuthException catch (error) {
       Get.snackbar(
         'Login Error',
@@ -129,15 +168,15 @@ class _LoginState extends State<Login> {
                   children: [
                     _buildTextField(
                       controller: emailController,
-                      label:      "Email",
-                      icon:       Icons.email,
+                      label: "Email",
+                      icon: Icons.email,
                       isPassword: false,
                     ),
                     SizedBox(height: size.height * 0.05),
                     _buildTextField(
                       controller: passwordController,
-                      label:      "Password",
-                      icon:       Icons.lock,
+                      label: "Password",
+                      icon: Icons.lock,
                       isPassword: true,
                     ),
                   ],
@@ -230,8 +269,9 @@ class _LoginState extends State<Login> {
     return TextFormField(
       controller: controller,
       obscureText: isPassword ? !_isPasswordVisible : false,
-      keyboardType:
-          isPassword ? TextInputType.visiblePassword : TextInputType.emailAddress,
+      keyboardType: isPassword
+          ? TextInputType.visiblePassword
+          : TextInputType.emailAddress,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true,
@@ -244,7 +284,8 @@ class _LoginState extends State<Login> {
             ? IconButton(
                 icon: Icon(
                   _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                 ),
                 onPressed: () =>
                     setState(() => _isPasswordVisible = !_isPasswordVisible),
@@ -279,28 +320,19 @@ class _LoginState extends State<Login> {
             Container(
               height: 3,
               width: size.width * 0.17,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withOpacity(0.12),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
             ),
             Text(
               "  Or continue with  ",
               style: TextStyle(
                 fontSize: 16,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               ),
             ),
             Container(
               height: 3,
               width: size.width * 0.17,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withOpacity(0.12),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
             ),
           ],
         ),
@@ -317,17 +349,24 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildSocialIcon(String image) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary,
-          width: 2,
+    return GestureDetector(
+      onTap: () {
+        if (image.contains('google')) {
+          _signInWithGoogle();
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary,
+            width: 2,
+          ),
         ),
+        child: Image.asset(image, height: 35),
       ),
-      child: Image.asset(image, height: 35),
     );
   }
 }
